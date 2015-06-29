@@ -167,6 +167,10 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\DataAccess\Entities\ArmyModels.cs" />
+    <Compile Include="Models\DataAccess\Entities\BuildingModels.cs" />
+    <Compile Include="Models\DataAccess\Entities\CountryModels.cs" />
+    <Compile Include="Models\DataAccess\Entities\ResearchModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -231,7 +235,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\DataAccess\Entities\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

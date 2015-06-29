@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 
+using EnCoOrszag.Models.DataAccess.Entities;
+
 namespace EnCoOrszag.Models
 {
     // You can add profile data for the user by adding more properties to your ApplicationUser class, please visit http://go.microsoft.com/fwlink/?LinkID=317594 to learn more.
@@ -19,25 +21,11 @@ namespace EnCoOrszag.Models
         }
     }
 
-    public class Orszag
-    {
-        public int Id { get; set; }
-
-        public string Name { get; set; }
-
-        public virtual ICollection<Sereg> Seregek { get; set; }
-
-
-    }
-
-    public class Sereg
-    {
-        public virtual Orszag Orszag { get; set; }
-    }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
-        public DbSet<Orszag> Orszagok { get; set; }
+        public DbSet<Global> Orszagok { get; set; }
+
 
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
