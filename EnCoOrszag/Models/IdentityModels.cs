@@ -1,5 +1,6 @@
 ﻿using System.Data.Entity;
 using System.Security.Claims;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
@@ -18,8 +19,26 @@ namespace EnCoOrszag.Models
         }
     }
 
+    public class Orszag
+    {
+        public int Id { get; set; }
+
+        public string Name { get; set; }
+
+        public virtual ICollection<Sereg> Seregek { get; set; }
+
+
+    }
+
+    public class Sereg
+    {
+        public virtual Orszag Orszag { get; set; }
+    }
+
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
+        public DbSet<Orszag> Orszagok { get; set; }
+
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {
