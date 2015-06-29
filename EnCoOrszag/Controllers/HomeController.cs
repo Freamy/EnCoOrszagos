@@ -23,7 +23,7 @@ namespace EnCoOrszag.Controllers
             return View();
         }
 
-        public ActionResult Contact(int erer)
+        public ActionResult Contact()
         {
             ViewBag.Message = "Your contact page.";
 
