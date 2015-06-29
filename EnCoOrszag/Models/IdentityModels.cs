@@ -24,9 +24,6 @@ namespace EnCoOrszag.Models
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
-        public DbSet<Global> Orszagok { get; set; }
-
-
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {
@@ -36,5 +33,9 @@ namespace EnCoOrszag.Models
         {
             return new ApplicationDbContext();
         }
+
+        public System.Data.Entity.DbSet<EnCoOrszag.Models.DataAccess.Entities.Building> Buildings { get; set; }
+
+        public System.Data.Entity.DbSet<EnCoOrszag.Models.DataAccess.Entities.Country> Countries { get; set; }
     }
 }

@@ -5,10 +5,11 @@ using System.Web;
 
 namespace EnCoOrszag.Models.DataAccess.Entities
 {
-    public class Building
+    public class Researching
     {
         public int Id { get; set; }
         public virtual Country Country { get; set; }
-        public int NumberOfBuildings { get; set; }
+        public virtual Technology Technology { get; set; }
+        public int FinishTurn { get; set; }
     }
 }
