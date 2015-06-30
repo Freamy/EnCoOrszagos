@@ -14,5 +14,6 @@ namespace EnCoOrszag.Controllers.GameControllers
         {
             return View();
         }
+
 	}
 }

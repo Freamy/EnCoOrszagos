@@ -14,5 +14,12 @@ namespace EnCoOrszag.Controllers.GameControllers
         {
             return View();
         }
+
+        public ActionResult Technology()
+        {
+
+            ViewBag.Message("Admin area for adding new technologies to the database.");
+            return View();
+        }
 	}
 }

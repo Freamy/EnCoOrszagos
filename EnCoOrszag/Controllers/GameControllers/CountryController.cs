@@ -21,10 +21,5 @@ namespace EnCoOrszag.Controllers.Entities
 
             return View();
         }
-
-        public void DoThings()
-        {
-
-        }
 	}
 }

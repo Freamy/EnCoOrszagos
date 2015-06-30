@@ -14,5 +14,10 @@ namespace EnCoOrszag.Controllers.GameControllers
         {
             return View();
         }
+
+        public ActionResult Researching()
+        {
+            return View();
+        }
 	}
 }

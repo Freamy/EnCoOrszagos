@@ -17,6 +17,7 @@ namespace EnCoOrszag.Controllers.GameControllers
 
         public ActionResult Army()
         {
+
             return View();
         }
 	}

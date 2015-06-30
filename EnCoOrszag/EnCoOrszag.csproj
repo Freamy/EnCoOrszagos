@@ -193,6 +193,7 @@
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="ViewModell\ForcesViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
@@ -255,13 +256,13 @@
     <Content Include="Views\Construction\Construction.cshtml" />
     <Content Include="Views\Forces\Forces.cshtml" />
     <Content Include="Views\Army\Army.cshtml" />
+    <Content Include="Views\Researching\Researching.cshtml" />
+    <Content Include="Views\Blueprint\Blueprint.cshtml" />
+    <Content Include="Views\Group\Group.cshtml" />
+    <Content Include="Views\Research\Research.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\Blueprint\" />
-    <Folder Include="Views\Group\" />
-    <Folder Include="Views\Researching\" />
-    <Folder Include="Views\Research\" />
     <Folder Include="Views\Technology\" />
     <Folder Include="Views\UnitType\" />
   </ItemGroup>

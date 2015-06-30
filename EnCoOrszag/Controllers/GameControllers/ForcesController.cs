@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EnCoOrszag.ViewModell;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -18,6 +19,14 @@ namespace EnCoOrszag.Controllers.GameControllers
         public ActionResult Forces()
         {
             ViewBag.Message = "This is your standing forces in the city.";
+
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Recruit(ForcesViewModel vm)
+        {
+            ViewBag.Message = "This button is pressed.";
 
             return View();
         }
