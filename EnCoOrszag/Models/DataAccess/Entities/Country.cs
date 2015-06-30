@@ -11,7 +11,7 @@ namespace EnCoOrszag.Models.DataAccess.Entities
         public virtual ICollection<ApplicationUser> User { get; set; }
 
 
-        public virtual Forces StandingForces { get; set; }
+        public virtual ICollection<Group> StandingForces { get; set; }
         public virtual ICollection<Army> Armies { get; set; }
 
         public virtual ICollection<Construction> Construction { get; set; }

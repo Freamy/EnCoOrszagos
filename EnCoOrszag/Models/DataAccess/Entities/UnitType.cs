@@ -14,6 +14,7 @@ namespace EnCoOrszag.Models.DataAccess.Entities
         public int Defense { get; set; }
         public int Cost { get; set; }
         public int Upkeep { get; set; }
+        public int Payment { get; set; }
         public int Score { get; set; }
     }
 }

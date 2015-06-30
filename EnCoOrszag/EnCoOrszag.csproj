@@ -166,7 +166,6 @@
     <Compile Include="Controllers\GameControllers\BuildingController.cs" />
     <Compile Include="Controllers\GameControllers\ConstructionController.cs" />
     <Compile Include="Controllers\GameControllers\CountryController.cs" />
-    <Compile Include="Controllers\GameControllers\ForcesController.cs" />
     <Compile Include="Controllers\GameControllers\GroupController.cs" />
     <Compile Include="Controllers\GameControllers\ResearchController.cs" />
     <Compile Include="Controllers\GameControllers\ResearchingController.cs" />
@@ -183,7 +182,6 @@
     <Compile Include="Models\DataAccess\Entities\Building.cs" />
     <Compile Include="Models\DataAccess\Entities\Construction.cs" />
     <Compile Include="Models\DataAccess\Entities\Country.cs" />
-    <Compile Include="Models\DataAccess\Entities\Forces.cs" />
     <Compile Include="Models\DataAccess\Entities\Group.cs" />
     <Compile Include="Models\DataAccess\Entities\Researching.cs" />
     <Compile Include="Models\DataAccess\Entities\Research.cs" />
