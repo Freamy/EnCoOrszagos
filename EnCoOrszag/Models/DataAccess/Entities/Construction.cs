@@ -5,7 +5,7 @@ using System.Web;
 
 namespace EnCoOrszag.Models.DataAccess.Entities
 {
-    public class Constructions
+    public class Construction
     {
         public int Id { get; set; }
         public virtual Country Country { get; set; }

@@ -161,24 +161,34 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
-    <Compile Include="Controllers\CountryController.cs" />
+    <Compile Include="Controllers\GameControllers\ArmyController.cs" />
+    <Compile Include="Controllers\GameControllers\BlueprintController.cs" />
+    <Compile Include="Controllers\GameControllers\BuildingController.cs" />
+    <Compile Include="Controllers\GameControllers\ConstructionController.cs" />
+    <Compile Include="Controllers\GameControllers\CountryController.cs" />
+    <Compile Include="Controllers\GameControllers\ForcesController.cs" />
+    <Compile Include="Controllers\GameControllers\GroupController.cs" />
+    <Compile Include="Controllers\GameControllers\ResearchController.cs" />
+    <Compile Include="Controllers\GameControllers\ResearchingController.cs" />
+    <Compile Include="Controllers\GameControllers\TechnologyController.cs" />
+    <Compile Include="Controllers\GameControllers\UnitTypeController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
-    <Compile Include="Models\DataAccess\Entities\ArmyModels.cs" />
-    <Compile Include="Models\DataAccess\Entities\BlueprintsModels.cs" />
-    <Compile Include="Models\DataAccess\Entities\BuildingModels.cs" />
-    <Compile Include="Models\DataAccess\Entities\ConstructionsModels.cs" />
-    <Compile Include="Models\DataAccess\Entities\CountryModels.cs" />
-    <Compile Include="Models\DataAccess\Entities\ForcesModels.cs" />
-    <Compile Include="Models\DataAccess\Entities\GroupModels.cs" />
-    <Compile Include="Models\DataAccess\Entities\ResearchingModels.cs" />
-    <Compile Include="Models\DataAccess\Entities\ResearchModels.cs" />
-    <Compile Include="Models\DataAccess\Entities\TechnologyModels.cs" />
-    <Compile Include="Models\DataAccess\Entities\UnitTypeModels.cs" />
+    <Compile Include="Models\DataAccess\Entities\Army.cs" />
+    <Compile Include="Models\DataAccess\Entities\Blueprints.cs" />
+    <Compile Include="Models\DataAccess\Entities\Building.cs" />
+    <Compile Include="Models\DataAccess\Entities\Construction.cs" />
+    <Compile Include="Models\DataAccess\Entities\Country.cs" />
+    <Compile Include="Models\DataAccess\Entities\Forces.cs" />
+    <Compile Include="Models\DataAccess\Entities\Group.cs" />
+    <Compile Include="Models\DataAccess\Entities\Researching.cs" />
+    <Compile Include="Models\DataAccess\Entities\Research.cs" />
+    <Compile Include="Models\DataAccess\Entities\Technology.cs" />
+    <Compile Include="Models\DataAccess\Entities\UnitType.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -240,10 +250,20 @@
     <Content Include="Views\Manage\VerifyPhoneNumber.cshtml" />
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
+    <Content Include="Views\Country\Country.cshtml" />
+    <Content Include="Views\Building\Build.cshtml" />
+    <Content Include="Views\Construction\Construction.cshtml" />
+    <Content Include="Views\Forces\Forces.cshtml" />
+    <Content Include="Views\Army\Army.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\Country\" />
+    <Folder Include="Views\Blueprint\" />
+    <Folder Include="Views\Group\" />
+    <Folder Include="Views\Researching\" />
+    <Folder Include="Views\Research\" />
+    <Folder Include="Views\Technology\" />
+    <Folder Include="Views\UnitType\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

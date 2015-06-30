@@ -4,12 +4,12 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace EnCoOrszag.Controllers.Entities
+namespace EnCoOrszag.Controllers.GameControllers
 {
-    public class CountryController : Controller
+    public class ResearchController : Controller
     {
         //
-        // GET: /Country/
+        // GET: /Research/
         public ActionResult Index()
         {
             return View();
