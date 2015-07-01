@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using EnCoOrszag.ViewModell;
 
 using EnCoOrszag.Models;
+using EnCoOrszag.Models.DataAccess.Entities;
 
 using EnCoOrszag.Models.DataAccess;
 
@@ -23,20 +24,24 @@ namespace EnCoOrszag.Controllers.Entities
 
         public ActionResult Country()
         {
-            ViewBag.Message = "Your country page. You can view your country's information and reach the Build and Recruit options from here.";
-
+            //var Country 
             return View();
         }
 
         public ActionResult Test(CountryViewModel mvC)
         {
+
+            int o = 0;
+            // kikell szervezni egy manager osztalyba
+            /*
             using (var db = new ApplicationDbContext())
             {
-                // Ezt kikell szervezni a data accesben egy manager osztalyba
-               // db.Country.Add(new EnCoOrszag.Models.DataAccess.Entities.Country());
+                //db...
             }
+            */
             //Csak uzenet nem irja be az adatbazisba.
-            ViewBag.Message = "You recived " + mvC.Gold + " gold.";
+            o = new Manager().getGoldAmount(mvC); // <- A manager fuggveny mar beirja az adatbazisba a gold valtozast.
+            ViewBag.Message = "You recived " + mvC.Gold + " gold."+" "+o;
             return View("Country");
         }
 	}

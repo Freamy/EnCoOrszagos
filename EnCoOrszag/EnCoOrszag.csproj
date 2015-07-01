@@ -202,6 +202,7 @@
     <Compile Include="ViewModell\BlueprintsViewModel.cs" />
     <Compile Include="ViewModell\ConstructionViewModel.cs" />
     <Compile Include="ViewModell\CountryViewModel.cs" />
+    <Compile Include="ViewModell\UnitTypeViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
@@ -267,11 +268,11 @@
     <Content Include="Views\Blueprint\Blueprint.cshtml" />
     <Content Include="Views\Group\Group.cshtml" />
     <Content Include="Views\Research\Research.cshtml" />
+    <Content Include="Views\UnitType\UnitType.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Views\Technology\" />
-    <Folder Include="Views\UnitType\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
