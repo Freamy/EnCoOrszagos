@@ -12,6 +12,8 @@ using Microsoft.Owin;
 using Microsoft.Owin.Security;
 using EnCoOrszag.Models;
 
+using EnCoOrszag.Models.DataAccess;
+
 namespace EnCoOrszag
 {
     public class EmailService : IIdentityMessageService

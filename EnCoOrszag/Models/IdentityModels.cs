@@ -1,15 +1,19 @@
 ﻿using System.Data.Entity;
 using System.Security.Claims;
 using System.Collections.Generic;
+
 using System.Threading.Tasks;
+
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
-using System.Data.Entity;
+
 
 using EnCoOrszag.Models.DataAccess.Entities;
 
 namespace EnCoOrszag.Models
 {
+    //TODO: application user kulon osztaly entitiesben
+
     // You can add profile data for the user by adding more properties to your ApplicationUser class, please visit http://go.microsoft.com/fwlink/?LinkID=317594 to learn more.
     public class ApplicationUser : IdentityUser
     {
@@ -22,7 +26,7 @@ namespace EnCoOrszag.Models
         }
     }
 
-
+    //TODO: DB context a data accesben
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext()

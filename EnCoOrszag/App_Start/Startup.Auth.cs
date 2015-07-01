@@ -7,6 +7,8 @@ using Microsoft.Owin.Security.Google;
 using Owin;
 using EnCoOrszag.Models;
 
+using EnCoOrszag.Models.DataAccess;
+
 namespace EnCoOrszag
 {
     public partial class Startup

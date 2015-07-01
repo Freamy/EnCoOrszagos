@@ -10,6 +10,8 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using EnCoOrszag.Models;
 
+using EnCoOrszag.Models.DataAccess;
+
 namespace EnCoOrszag.Controllers
 {
     [Authorize]

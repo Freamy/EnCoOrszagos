@@ -182,6 +182,8 @@
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\DataAccess\ApplicationDbContext.cs" />
+    <Compile Include="Models\DataAccess\Entities\ApplicationUser.cs" />
     <Compile Include="Models\DataAccess\Entities\Army.cs" />
     <Compile Include="Models\DataAccess\Entities\Blueprints.cs" />
     <Compile Include="Models\DataAccess\Entities\Building.cs" />
@@ -192,7 +194,7 @@
     <Compile Include="Models\DataAccess\Entities\Research.cs" />
     <Compile Include="Models\DataAccess\Entities\Technology.cs" />
     <Compile Include="Models\DataAccess\Entities\UnitType.cs" />
-    <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\DataAccess\Manager.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />

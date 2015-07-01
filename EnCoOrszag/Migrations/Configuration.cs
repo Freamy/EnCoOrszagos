@@ -5,7 +5,9 @@ namespace EnCoOrszag.Migrations
     using System.Data.Entity.Migrations;
     using System.Linq;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<EnCoOrszag.Models.ApplicationDbContext>
+    using EnCoOrszag.Models.DataAccess;
+
+    internal sealed class Configuration : DbMigrationsConfiguration<ApplicationDbContext>
     {
         public Configuration()
         {
@@ -13,7 +15,7 @@ namespace EnCoOrszag.Migrations
             ContextKey = "EnCoOrszag.Models.ApplicationDbContext";
         }
 
-        protected override void Seed(EnCoOrszag.Models.ApplicationDbContext context)
+        protected override void Seed(ApplicationDbContext context)
         {
             //  This method will be called after migrating to the latest version.
 
