@@ -176,6 +176,11 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201507011018202_FirstMigration.cs" />
+    <Compile Include="Migrations\201507011018202_FirstMigration.Designer.cs">
+      <DependentUpon>201507011018202_FirstMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\DataAccess\Entities\Army.cs" />
     <Compile Include="Models\DataAccess\Entities\Blueprints.cs" />
@@ -191,7 +196,10 @@
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
-    <Compile Include="ViewModell\ForcesViewModel.cs" />
+    <Compile Include="ViewModell\ArmyViewModel.cs" />
+    <Compile Include="ViewModell\BlueprintsViewModel.cs" />
+    <Compile Include="ViewModell\ConstructionViewModel.cs" />
+    <Compile Include="ViewModell\CountryViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
@@ -252,7 +260,6 @@
     <Content Include="Views\Country\Country.cshtml" />
     <Content Include="Views\Building\Build.cshtml" />
     <Content Include="Views\Construction\Construction.cshtml" />
-    <Content Include="Views\Forces\Forces.cshtml" />
     <Content Include="Views\Army\Army.cshtml" />
     <Content Include="Views\Researching\Researching.cshtml" />
     <Content Include="Views\Blueprint\Blueprint.cshtml" />
@@ -270,6 +277,11 @@
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="packages.config" />
     <None Include="Project_Readme.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201507011018202_FirstMigration.resx">
+      <DependentUpon>201507011018202_FirstMigration.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

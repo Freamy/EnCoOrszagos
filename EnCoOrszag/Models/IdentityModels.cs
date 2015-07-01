@@ -28,6 +28,7 @@ namespace EnCoOrszag.Models
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {
+          
         }
 
         public static ApplicationDbContext Create()
@@ -35,18 +36,23 @@ namespace EnCoOrszag.Models
             return new ApplicationDbContext();
         }
 
-        //TODO: Felvenni az adatbazisok, Google: entity framework code first migration
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+        }
+
+
+
+        
         public DbSet<Army> Armies { get; set; }
         public DbSet<Blueprints> Blueprints { get; set; }
         public DbSet<Building> Buildings { get; set; }
         public DbSet<Construction> Constructions { get; set; }
-        public DbSet<Country> Countries { get; set; }
+        public DbSet<Country> Country { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<Research> Researches { get; set; }
         public DbSet<Researching> Researching { get; set; }
         public DbSet<Technology> Technologies { get; set; }
-      //  public DbSet<UnitType> UnitTypes { get; set; }
-
-        
+        public DbSet<UnitType> UnitTypes { get; set; } 
     }
 }

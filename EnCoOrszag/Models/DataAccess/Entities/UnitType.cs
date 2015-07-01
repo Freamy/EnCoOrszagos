@@ -5,7 +5,7 @@ using System.Web;
 
 namespace EnCoOrszag.Models.DataAccess.Entities
 {
-    public class UnitTypes
+    public class UnitType
     {
         public int Id { get; set; }
         public string Name { get; set; }

@@ -9,7 +9,7 @@ namespace EnCoOrszag.Models.DataAccess.Entities
     {
         public int Id { get; set; }
         public virtual Country Country { get; set; }
-        public virtual UnitTypes UnitType { get; set; }
+        public virtual UnitType UnitType { get; set; }
         public int Size { get; set; }
     }
 }

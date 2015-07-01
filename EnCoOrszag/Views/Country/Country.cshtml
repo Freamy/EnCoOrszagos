@@ -1,19 +1,15 @@
-﻿
+﻿@model EnCoOrszag.ViewModell.CountryViewModel
 @{
     ViewBag.Title = "Country";
 }
 
 <h2>@ViewBag.Message</h2>
 
-<div>
-    @Html.ActionLink("Build something", "Construction", "Construction")
-    -
-    @Html.ActionLink("Recruit some soliders", "Forces", "Forces")
-    -
-    @Html.ActionLink("Send assault", "Army", "Army")
-    -
-    @Html.ActionLink("Research", "Researching", "Researching")
-</div>
-<div>
-    
-</div>
+
+@using (Html.BeginForm("Test", "Country", FormMethod.Post))
+{
+    <div>@Html.LabelFor(m => m.Gold) - @Html.TextBoxFor(m => m.Gold)</div>
+    <input type="submit" value="Cheat" />
+}
+
+
