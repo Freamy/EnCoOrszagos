@@ -38,6 +38,7 @@ namespace EnCoOrszag.Controllers.GameControllers
             if (submit.Equals("Build " + name))
             {
                 ViewBag.Message = name+" simple";
+                manager.startConstruction(name);
                 //TODO: actually build something.
             }
             

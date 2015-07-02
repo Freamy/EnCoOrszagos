@@ -70,5 +70,17 @@ namespace EnCoOrszag.Models.DataAccess
                 return context.Blueprints.First(m => "Build " + m.Name == submit).Name;
             }
         }
+
+        public string startConstruction(string buildingName)
+        {
+            using (var context = new ApplicationDbContext())
+            {
+                // string name = System.Web.HttpContext.Current.User.Identity.Name.ToString(); How to get current user name
+                // context.Constructions.Count(m => m.Country.Id == context.Countries.First(c => c.Id == context.Users.First(u => u.Country.Id)).Id);
+                //Argh distractions...
+                var g = context.Blueprints.First(m => m.Id == 0);
+                
+            }
+        }
     }
 }
