@@ -5,16 +5,11 @@
 
 <h2>@ViewBag.Message</h2>
 
+    @Html.ActionLink("Make buildings", "Building", "Building")
 
-@using (Html.BeginForm("Test", "Country", FormMethod.Post))
-{
-    <div>@Html.LabelFor(m => m.Gold) - @Html.TextBoxFor(m => m.Gold)</div>
-    <input type="submit" value="Cheat" />
-}
 
-@using (Html.BeginForm("Country", "Country", FormMethod.Get))
-{
-    
-}
+
+
+
 
 

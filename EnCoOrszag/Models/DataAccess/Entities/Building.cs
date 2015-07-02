@@ -9,6 +9,7 @@ namespace EnCoOrszag.Models.DataAccess.Entities
     {
         public int Id { get; set; }
         public virtual Country Country { get; set; }
+        public virtual Blueprints Blueprint { get; set; }
         public int NumberOfBuildings { get; set; }
     }
 }

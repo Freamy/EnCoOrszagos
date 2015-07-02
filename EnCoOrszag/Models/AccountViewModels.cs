@@ -79,6 +79,14 @@ namespace EnCoOrszag.Models
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+
+        //Country registration extra
+        [Required]
+        [Display(Name = "Country name")]
+        public string CountryName { get; set; }
+
+        //Just for testing
+        public string StartingBuilding { get; set; }
     }
 
     public class ResetPasswordViewModel

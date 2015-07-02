@@ -1,9 +1,19 @@
-﻿
+﻿@model EnCoOrszag.ViewModell.BuildingViewModel
 @{
     ViewBag.Title = "Build";
 }
-
 <h2>Build</h2>
+
+@using (Html.BeginForm("BuildSomething", "Building", FormMethod.Post))
+{
+    foreach (var item in Model.Blueprints)
+    {
+        <div>
+            <input type="submit" name="submit" value="Build @item.Name"/>
+            @item.Description <br /> 
+        </div>
+    }
+}
 
 
 

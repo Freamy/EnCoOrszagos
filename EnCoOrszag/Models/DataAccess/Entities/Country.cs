@@ -19,6 +19,8 @@ namespace EnCoOrszag.Models.DataAccess.Entities
         public virtual ICollection<Researching> Researching { get; set; }
         public virtual ICollection<Research> Researches { get; set; }
 
+        public string Name { get; set; }
+
         public int Gold { get; set; }
         public int Potato { get; set; }
 

@@ -19,12 +19,12 @@ namespace EnCoOrszag.Controllers.Entities
         // GET: /Country/
         public ActionResult Index()
         {
-            return View();
+            return View("Country");
         }
 
+        //Main country screen
         public ActionResult Country()
         {
-            //var Country 
             return View();
         }
 

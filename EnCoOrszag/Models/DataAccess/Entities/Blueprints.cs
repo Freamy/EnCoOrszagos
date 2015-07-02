@@ -14,5 +14,7 @@ namespace EnCoOrszag.Models.DataAccess.Entities
         public int BuildTime { get; set; }
         public int Cost { get; set; }
         public int Score { get; set; }
+
+        public virtual ICollection<Building> Buildings { get; set; }
     }
 }

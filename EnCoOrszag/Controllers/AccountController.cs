@@ -11,6 +11,7 @@ using Microsoft.Owin.Security;
 using EnCoOrszag.Models;
 
 using EnCoOrszag.Models.DataAccess;
+using EnCoOrszag.Models.DataAccess.Entities;
 
 namespace EnCoOrszag.Controllers
 {
@@ -81,7 +82,8 @@ namespace EnCoOrszag.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
-                    return RedirectToLocal(returnUrl);
+                   // return RedirectToLocal(returnUrl);
+                    return RedirectToAction("Country","Country");
                 case SignInStatus.LockedOut:
                     return View("Lockout");
                 case SignInStatus.RequiresVerification:
@@ -154,6 +156,16 @@ namespace EnCoOrszag.Controllers
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+
+                // For country creation
+                Country country = new Manager().getNewCountry(model);
+                user.Country = country;
+
+                //EXAMPLE
+                // Blueprints blueprint = apDb.Blueprints.Single(m => m.Name == model.StartingBuilding); usefull reminder but wrong here.
+                
+                
+
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -165,7 +177,7 @@ namespace EnCoOrszag.Controllers
                     // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Country", "Country");
                 }
                 AddErrors(result);
             }
