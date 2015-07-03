@@ -25,7 +25,6 @@ namespace EnCoOrszag.Controllers.GameControllers
             
             BuildingViewModel vmBuild = manager.makeBuildingViewModel();
 
-
             return View("Build", vmBuild);
         }
 
@@ -37,9 +36,7 @@ namespace EnCoOrszag.Controllers.GameControllers
 
             if (submit.Equals("Build " + name))
             {
-                ViewBag.Message = name+" simple";
-                manager.startConstruction(name);
-                //TODO: actually build something.
+                bool started = manager.startConstruction(name);
             }
             
             return View("Response");
