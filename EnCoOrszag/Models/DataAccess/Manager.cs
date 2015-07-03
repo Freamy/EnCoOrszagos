@@ -83,13 +83,21 @@ namespace EnCoOrszag.Models.DataAccess
                 List<TechnologyViewModel> vmTech = new List<TechnologyViewModel>();
 
                 List<Technology> techList = context.Technologies.ToList<Technology>();
-
+                //Researches tablaban szerepel-e ez a tech ID ehez az orszaghoz
                 foreach (var tech in techList)
                 {
                     TechnologyViewModel temp = new TechnologyViewModel();
                     temp.Name = tech.Name;
                     temp.Description = tech.Description;
                     //TODO: researched figure out!
+
+                    // THIS IS WRONG! NOT RIGHT!
+                    context.Researches.Where(
+                        m => m.Id == tech.Id
+                        ).Where(
+                            c => c.Country.Id == 1
+                        );
+
                     temp.Researched = false;
                     vmTech.Add(temp);
                 }
@@ -238,6 +246,8 @@ namespace EnCoOrszag.Models.DataAccess
                     Research finished = new Research();
                     finished.Country = context.Countries.First(m => m.Id == activeCountryId);
                     finished.Finished = 1;
+
+                    finished.Technology = researching.Technology;
 
                     context.Researching.Remove(researching);
 

@@ -9,6 +9,7 @@ namespace EnCoOrszag.Models.DataAccess.Entities
     {
         public int Id { get; set; }
         public virtual Country Country { get; set; }
+        public virtual Technology Technology { get; set; }
         public int Finished { get; set; } // 0: Not done, n: How many times its repeated.
     }
 }
