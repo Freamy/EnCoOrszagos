@@ -55,6 +55,7 @@ namespace EnCoOrszag.Models.DataAccess
                     vmTemp.Cost = item.Cost;
                     vmTemp.Description = item.Description;
                     vmTemp.Repeatable = item.Repeatable;
+                    //TODO: ez a foreach biztosan kivalthato egy SQL-el!
                     foreach (var building in buildingList)
                     {
                         if(building.Blueprint == item){
