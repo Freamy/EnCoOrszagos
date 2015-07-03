@@ -25,7 +25,16 @@ namespace EnCoOrszag.Controllers.Entities
         //Main country screen
         public ActionResult Country()
         {
-            return View();
+            Manager manager = new Manager();
+             bool logedin = manager.isLogedIn();
+
+            if (logedin) { 
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Login", "Account");
+            }
         }
 
         public ActionResult Test(CountryViewModel mvC)

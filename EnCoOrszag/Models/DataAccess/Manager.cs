@@ -12,6 +12,9 @@ namespace EnCoOrszag.Models.DataAccess
 {
     public class Manager
     {
+        readonly int MAX_PARALLEL_CONSTRUCTIONS = 1;
+        readonly int MAX_PARALLEL_RESEARCHES = 1;
+
         //Minta beiiras - igazabol rosz, direct ID, etc
         public int getGoldAmount(CountryViewModel mvC)
         {
@@ -25,12 +28,22 @@ namespace EnCoOrszag.Models.DataAccess
             return g;
         }
 
+        public bool isLogedIn()
+        {
+            if (System.Web.HttpContext.Current.User.Identity.IsAuthenticated)
+            {
+                return true;
+            }
+            return false;
+        }
+
         public BuildingViewModel makeBuildingViewModel()
         {
             using (var context = new ApplicationDbContext())
             {
                 List<Blueprints> bls = context.Blueprints.ToList<Blueprints>();
-                //List<Building> buildingList = context.Buildings.ToList<Building>();
+
+                List<Building> buildingList = context.Buildings.ToList<Building>();
 
                 List<BlueprintsViewModel> vmBls = new List<BlueprintsViewModel>();
 
@@ -42,24 +55,46 @@ namespace EnCoOrszag.Models.DataAccess
                     vmTemp.Cost = item.Cost;
                     vmTemp.Description = item.Description;
                     vmTemp.Repeatable = item.Repeatable;
-                    /*foreach (var building in buildingList)
+                    foreach (var building in buildingList)
                     {
                         if(building.Blueprint == item){
                             vmTemp.NoOfFinishedBlueprints = building.NumberOfBuildings;
                             break;
                         }
-                    }*/
+                    }
                     
                     vmBls.Add(vmTemp);
                 }
-
-
-                
 
                 BuildingViewModel vmBuild = new BuildingViewModel();
                 vmBuild.Blueprints = vmBls;
 
                 return vmBuild;
+            }
+        }
+
+        public ResearchViewModel makeResearchViewModel()
+        {
+            using (var context = new ApplicationDbContext())
+            {
+                ResearchViewModel vmResearch = new ResearchViewModel();
+
+                List<TechnologyViewModel> vmTech = new List<TechnologyViewModel>();
+
+                List<Technology> techList = context.Technologies.ToList<Technology>();
+
+                foreach (var tech in techList)
+                {
+                    TechnologyViewModel temp = new TechnologyViewModel();
+                    temp.Name = tech.Name;
+                    temp.Description = tech.Description;
+                    //TODO: researched figure out!
+                    temp.Researched = false;
+                    vmTech.Add(temp);
+                }
+
+                vmResearch.Technologies = vmTech;
+                return vmResearch;
             }
         }
         
@@ -82,7 +117,7 @@ namespace EnCoOrszag.Models.DataAccess
             using (var context = new ApplicationDbContext())
             {
                 //return context.Blueprints.Single(m => m.Name == "Build " + submit).Name;
-                return context.Blueprints.First(m => "Build " + m.Name == submit).Name;
+                return context.Blueprints.First(m => m.Name == submit).Name;
             }
         }
 
@@ -94,73 +129,121 @@ namespace EnCoOrszag.Models.DataAccess
                 int activeCountryId = context.Users.First(c => c.UserName == System.Web.HttpContext.Current.User.Identity.Name).Country.Id;
 
                 bool canConstruct = context.Constructions.Count(
-                    m => m.Country.Id == activeCountryId) == 0;
+                    m => m.Country.Id == activeCountryId) < MAX_PARALLEL_CONSTRUCTIONS;
 
                 if (canConstruct)
                 {
                     Construction buildingStarted = new Construction();
                     buildingStarted.Blueprint = context.Blueprints.First(m => m.Name == buildingName);
+
                     buildingStarted.Country = context.Countries.First(
                         m => m.Id == activeCountryId);
-                    buildingStarted.FinishTurn = 5;
+
+                    buildingStarted.FinishTurn = 5; //TODO: current round + 5
                     context.Constructions.Add(buildingStarted);
                     context.SaveChanges();
                     return true;
                 }
-                else {
-                    return false;
-                }
+                return false;
             }
         }
 
-        /*  TODO: This function will need to find the finishing construction, right now it just returns the only one the player have.
-            It can actually stay this way since right now you can only build one thing at a time. */
-        public Construction finishingConstruction()
+        public bool startResearch(string researchName)
         {
-            using (var context = new ApplicationDbContext())
-            {
+            using (var context = new ApplicationDbContext()) { 
                 int activeCountryId = context.Users.First(c => c.UserName == System.Web.HttpContext.Current.User.Identity.Name).Country.Id;
-                return context.Constructions.FirstOrDefault(
-                        m => m.Country.Id == activeCountryId
-                        );
+
+                bool canResearch = context.Researching.Count(
+                    m => m.Country.Id == activeCountryId) < MAX_PARALLEL_RESEARCHES;
+
+                if (canResearch)
+                {
+                    Researching researchStarted = new Researching();
+                    researchStarted.Technology = context.Technologies.First(m => m.Name == researchName);
+
+                    researchStarted.Country = context.Countries.First(
+                        m => m.Id == activeCountryId
+                    );
+
+                    researchStarted.FinishTurn = 15; //TODO: current round + 15
+                    context.Researching.Add(researchStarted);
+                    context.SaveChanges();
+                    return true;
+                }
+
+                return false;
             }
+        }
+
+
+        public void endTurn()
+        {
+            finishConstruction();
+            finishResearch();
         }
 
         public void finishConstruction()
         {
-           // if(construction != null)
                 using (var context = new ApplicationDbContext())
                 {
                     int activeCountryId = context.Users.First(c => c.UserName == System.Web.HttpContext.Current.User.Identity.Name).Country.Id;
+
+                    //TODO: this needs a where time == 0... korvege thingy
                     Construction construction = context.Constructions.FirstOrDefault(
                         m => m.Country.Id == activeCountryId
                         );
 
-
-                    bool wasBuilding = true;
-                    Building building = context.Buildings.FirstOrDefault( 
-                            m => m.Blueprint.Id == construction.Blueprint.Id
-                        );
-
-                    if (building == null)
+                    if (construction != null)
                     {
-                        wasBuilding = false;
+                        bool wasBuilding = true;
+                        Building building = context.Buildings.FirstOrDefault(
+                                m => m.Blueprint.Id == construction.Blueprint.Id
+                            );
+
+                        if (building == null)
+                        {
+                            wasBuilding = false;
+                        }
+
+                        if (!wasBuilding)
+                            building = new Building();
+
+                        building.Blueprint = construction.Blueprint;
+                        building.Country = context.Countries.First(m => m.Id == activeCountryId);
+                        building.NumberOfBuildings = building.NumberOfBuildings + 1;
+
+                        context.Constructions.Remove(construction);
+
+                        if (!wasBuilding)
+                            context.Buildings.Add(building);
+
+                        context.SaveChanges();
                     }
+                }
+        }
 
-                    if(!wasBuilding)
-                        building = new Building();
+        public void finishResearch()
+        {
+            using (var context = new ApplicationDbContext())
+            {
+                int activeCountryId = context.Users.First(c => c.UserName == System.Web.HttpContext.Current.User.Identity.Name).Country.Id;
 
-                    building.Blueprint = construction.Blueprint;
-                    building.Country = context.Countries.First(m => m.Id == activeCountryId);
-                    building.NumberOfBuildings = building.NumberOfBuildings + 1;
-                                
-                    context.Constructions.Remove(construction);
+                Researching researching = context.Researching.FirstOrDefault(
+                    m => m.Country.Id == activeCountryId
+                );
 
-                    if(!wasBuilding)
-                        context.Buildings.Add(building);
+                if (researching != null)
+                {
+                    Research finished = new Research();
+                    finished.Country = context.Countries.First(m => m.Id == activeCountryId);
+                    finished.Finished = 1;
 
+                    context.Researching.Remove(researching);
+
+                    context.Researches.Add(finished);
                     context.SaveChanges();
                 }
+            }
         }
     }
 }

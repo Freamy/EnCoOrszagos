@@ -15,11 +15,9 @@ namespace EnCoOrszag.Controllers.GameControllers
             return View();
         }
 
-        public ActionResult Construction()
+        public ActionResult CurrentConstructions()
         {
-            ViewBag.Message = "You can start building your buildings by clicking on the buttons on the left.";
-
-            return View();
+            return View("Construction");
         }
 	}
 }

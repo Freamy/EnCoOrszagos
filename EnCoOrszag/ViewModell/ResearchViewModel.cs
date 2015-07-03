@@ -5,8 +5,8 @@ using System.Web;
 
 namespace EnCoOrszag.ViewModell
 {
-    public class ConstructionViewModel
+    public class ResearchViewModel
     {
-       
+        public ICollection<TechnologyViewModel> Technologies { get; set; }
     }
 }

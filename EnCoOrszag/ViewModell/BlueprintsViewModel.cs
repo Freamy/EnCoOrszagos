@@ -15,5 +15,6 @@ namespace EnCoOrszag.ViewModell
         public int Score { get; set; }
 
         public int NoOfFinishedBlueprints { get; set; }
+        public int NoOfTurnsLeft { get; set; }
     }
 }

@@ -22,24 +22,28 @@ namespace EnCoOrszag.Controllers.GameControllers
         public ActionResult Building()
         {
             Manager manager = new Manager();
-            
-            BuildingViewModel vmBuild = manager.makeBuildingViewModel();
 
-            return View("Build", vmBuild);
+            bool logedin = manager.isLogedIn();
+
+            if (logedin) { 
+                BuildingViewModel vmBuild = manager.makeBuildingViewModel();
+                return View("Build", vmBuild);
+            }
+            else
+            {
+                ViewBag.Message = "Please register a new user.";
+                return RedirectToAction("Login", "Account");
+            }
         }
 
 
         public ActionResult BuildSomething(string submit)
         {
             Manager manager = new Manager();
-            string name = manager.getBlueprintName(submit);
 
             bool started = false;
-            if (submit.Equals("Build " + name))
-            {
-                started = manager.startConstruction(name);
-            }
 
+            started = manager.startConstruction(submit);
             if (started)
             {
                 ViewBag.Message = "Your construction is started.";
@@ -50,7 +54,6 @@ namespace EnCoOrszag.Controllers.GameControllers
             }
             
             return View("Response");
-            //return RedirectToAction("Building");
         }
 
         public ActionResult CheatBuilding()

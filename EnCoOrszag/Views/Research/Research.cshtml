@@ -1,5 +1,35 @@
-﻿@model EnCoOrszag.Models.DataAccess.Entities.Research
+﻿@model EnCoOrszag.ViewModell.ResearchViewModel
 
 @{
-    Layout = null;
+    ViewBag.Title = "Research";
+}
+
+<h2>Research</h2>
+
+@using (Html.BeginForm("ResearchSomething","Research",FormMethod.Post))
+{
+    <table border="0">
+        <tr>
+            <th>Research</th>
+            <th>Description</th>
+            <th>Acquired</th>
+        </tr>
+        @foreach (var item in Model.Technologies)
+        {
+            <tr>
+                <td align="left">
+                    <input type="submit" name="submit" value="@item.Name" disabled=@item.Researched/>
+                </td>
+                <td>
+                    @item.Description
+                </td>
+            </tr>
+        }
+        
+    </table>
+}
+<br />
+@using (Html.BeginForm("CheatResearch", "Research", FormMethod.Post))
+{
+    <input type="submit" name="submit" value="Finish Research" />
 }

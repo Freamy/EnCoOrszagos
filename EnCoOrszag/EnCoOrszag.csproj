@@ -203,7 +203,9 @@
     <Compile Include="ViewModell\BuildingViewModel.cs" />
     <Compile Include="ViewModell\ConstructionViewModel.cs" />
     <Compile Include="ViewModell\CountryViewModel.cs" />
+    <Compile Include="ViewModell\ResearchViewModel.cs" />
     <Compile Include="ViewModell\SingelBuildingViewModel.cs" />
+    <Compile Include="ViewModell\TechnologyViewModel.cs" />
     <Compile Include="ViewModell\UnitTypeViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -272,6 +274,7 @@
     <Content Include="Views\Research\Research.cshtml" />
     <Content Include="Views\UnitType\UnitType.cshtml" />
     <Content Include="Views\Building\Response.cshtml" />
+    <Content Include="Views\Research\Response.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

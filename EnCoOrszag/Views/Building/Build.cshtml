@@ -6,23 +6,31 @@
 
 @using (Html.BeginForm("BuildSomething", "Building", FormMethod.Post))
 {
-
-    <table>
+    <table border="0">
+        <tr>
+            <th>Construct</th>
+            <th>Description</th>
+            <th>#</th>
+        </tr>
         @foreach (var item in Model.Blueprints)
         {
 
         <tr>
-            <td>
-                <input type="submit" name="submit" value="Build @item.Name" />
+            <td align="center">
+                <input type="submit" name="submit" value=@item.Name />
             </td>
             <td>
                 @item.Description
             </td>
+            <td>
+                @item.NoOfFinishedBlueprints
+            </td>
         </tr>
         }
     </table>
-
 }
+
+<br />
 
 @using (Html.BeginForm("CheatBuilding", "Building", FormMethod.Post))
 {

@@ -5,7 +5,24 @@
 
 <h2>@ViewBag.Message</h2>
 
-    @Html.ActionLink("Make buildings", "Building", "Building")
+<table border="1">
+    <tr>
+        <th>Building</th>
+        <th>Research</th>
+        <th>Military</th>
+    </tr>
+    <tr>
+        <td>@Html.ActionLink("Make buildings", "Building", "Building")</td>
+        <td>@Html.ActionLink("Start research", "Research", "Research")</td>
+        <td>TODO</td>
+    </tr>
+    <tr>
+        <td>@Html.ActionLink("Current constructions","CurrentConstructions","Construction")</td>
+        <td>TODO</td>
+        <td>TODO</td>
+    </tr>
+</table>
+    
 
 
 
