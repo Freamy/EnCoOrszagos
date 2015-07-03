@@ -34,13 +34,30 @@ namespace EnCoOrszag.Controllers.GameControllers
             Manager manager = new Manager();
             string name = manager.getBlueprintName(submit);
 
+            bool started = false;
             if (submit.Equals("Build " + name))
             {
-                bool started = manager.startConstruction(name);
+                started = manager.startConstruction(name);
+            }
+
+            if (started)
+            {
+                ViewBag.Message = "Your construction is started.";
+            }
+            else
+            {
+                ViewBag.Message = "You can't make more then one building at the same time.";
             }
             
             return View("Response");
             //return RedirectToAction("Building");
+        }
+
+        public ActionResult CheatBuilding()
+        {
+            Manager manager = new Manager();
+            manager.finishConstruction();
+            return RedirectToAction("Building");
         }
 	}
 }

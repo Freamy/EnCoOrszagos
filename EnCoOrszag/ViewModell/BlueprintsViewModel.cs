@@ -13,5 +13,7 @@ namespace EnCoOrszag.ViewModell
         public int BuildTime { get; set; }
         public int Cost { get; set; }
         public int Score { get; set; }
+
+        public int NoOfFinishedBlueprints { get; set; }
     }
 }

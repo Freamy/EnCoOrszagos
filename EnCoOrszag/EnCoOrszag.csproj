@@ -203,6 +203,7 @@
     <Compile Include="ViewModell\BuildingViewModel.cs" />
     <Compile Include="ViewModell\ConstructionViewModel.cs" />
     <Compile Include="ViewModell\CountryViewModel.cs" />
+    <Compile Include="ViewModell\SingelBuildingViewModel.cs" />
     <Compile Include="ViewModell\UnitTypeViewModel.cs" />
   </ItemGroup>
   <ItemGroup>

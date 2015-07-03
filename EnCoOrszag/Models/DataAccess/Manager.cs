@@ -30,6 +30,8 @@ namespace EnCoOrszag.Models.DataAccess
             using (var context = new ApplicationDbContext())
             {
                 List<Blueprints> bls = context.Blueprints.ToList<Blueprints>();
+                //List<Building> buildingList = context.Buildings.ToList<Building>();
+
                 List<BlueprintsViewModel> vmBls = new List<BlueprintsViewModel>();
 
                 foreach (var item in bls)
@@ -40,8 +42,19 @@ namespace EnCoOrszag.Models.DataAccess
                     vmTemp.Cost = item.Cost;
                     vmTemp.Description = item.Description;
                     vmTemp.Repeatable = item.Repeatable;
+                    /*foreach (var building in buildingList)
+                    {
+                        if(building.Blueprint == item){
+                            vmTemp.NoOfFinishedBlueprints = building.NumberOfBuildings;
+                            break;
+                        }
+                    }*/
+                    
                     vmBls.Add(vmTemp);
                 }
+
+
+                
 
                 BuildingViewModel vmBuild = new BuildingViewModel();
                 vmBuild.Blueprints = vmBls;
@@ -100,9 +113,54 @@ namespace EnCoOrszag.Models.DataAccess
             }
         }
 
-        public string finishConstruction()
+        /*  TODO: This function will need to find the finishing construction, right now it just returns the only one the player have.
+            It can actually stay this way since right now you can only build one thing at a time. */
+        public Construction finishingConstruction()
         {
-            return "Done?";
+            using (var context = new ApplicationDbContext())
+            {
+                int activeCountryId = context.Users.First(c => c.UserName == System.Web.HttpContext.Current.User.Identity.Name).Country.Id;
+                return context.Constructions.FirstOrDefault(
+                        m => m.Country.Id == activeCountryId
+                        );
+            }
+        }
+
+        public void finishConstruction()
+        {
+           // if(construction != null)
+                using (var context = new ApplicationDbContext())
+                {
+                    int activeCountryId = context.Users.First(c => c.UserName == System.Web.HttpContext.Current.User.Identity.Name).Country.Id;
+                    Construction construction = context.Constructions.FirstOrDefault(
+                        m => m.Country.Id == activeCountryId
+                        );
+
+
+                    bool wasBuilding = true;
+                    Building building = context.Buildings.FirstOrDefault( 
+                            m => m.Blueprint.Id == construction.Blueprint.Id
+                        );
+
+                    if (building == null)
+                    {
+                        wasBuilding = false;
+                    }
+
+                    if(!wasBuilding)
+                        building = new Building();
+
+                    building.Blueprint = construction.Blueprint;
+                    building.Country = context.Countries.First(m => m.Id == activeCountryId);
+                    building.NumberOfBuildings = building.NumberOfBuildings + 1;
+                                
+                    context.Constructions.Remove(construction);
+
+                    if(!wasBuilding)
+                        context.Buildings.Add(building);
+
+                    context.SaveChanges();
+                }
         }
     }
 }
