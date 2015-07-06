@@ -4,6 +4,9 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
+using EnCoOrszag.ViewModell;
+using EnCoOrszag.Models.DataAccess;
+
 namespace EnCoOrszag.Controllers.GameControllers
 {
     public class ConstructionController : Controller
@@ -17,12 +20,17 @@ namespace EnCoOrszag.Controllers.GameControllers
 
         public ActionResult CurrentConstructions()
         {
-            return View("Construction");
+            Manager manager = new Manager();
+            return View("CurrentConstruction", manager.makeConstructionViewModel());
         }
 
-        public ActionResult CancelConstruction()
+        [HttpPost]
+        public ActionResult CancelConstruction(string Cancel, ConstructionViewModel vmC)
         {
-            return RedirectToAction("Building", "Building");
+            Manager manager = new Manager();
+            manager.cancelConstruction(vmC.Id);
+            ModelState.Clear();
+            return RedirectToAction("CurrentConstructions", "Construction");
         }
 	}
 }

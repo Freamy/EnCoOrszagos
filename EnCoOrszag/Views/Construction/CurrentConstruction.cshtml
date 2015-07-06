@@ -1,16 +1,43 @@
-﻿@model  List<EnCoOrszag.ViewModell.ConstructionViewModel>
+﻿<head>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+        }
+
+        th, td {
+            padding: 10px;
+            align-items: center;
+            align-content: center;
+        }
+    </style>
+</head>
+
+@model  List<EnCoOrszag.ViewModell.ConstructionViewModel>
 @{
     ViewBag.Title = "CurrentConstruction";
 }
+<h2>Current Construction</h2>
 
-<h2>CurrentConstruction</h2>
+@ViewBag.Message
 
 <table>
-    @using (Html.BeginForm("CancelConstruction", "Construction", FormMethod.Post))
-    {
-        foreach (var item in Model)
+    <tr>
+        <th>Name</th>
+        <th>Time Left</th>
+        <th>Cancel construction</th>
+    </tr>
+   
+        @foreach (var item in Model)
         {
-            
+            using (Html.BeginForm("CancelConstruction", "Construction", FormMethod.Post))
+            { 
+                <tr>
+                    <td>@item.Name</td>
+                    <td><progress value=@item.TurnsLeft max=@item.WholeTime></progress></td>
+                    <td><input type="submit" name="cancel" value="Cancel"/> @item.Id</td>
+                    @Html.HiddenFor(m => m.Single(k => k.Id == item.Id).Id)
+                </tr>
+            }
         }
-    }
+    
 </table>

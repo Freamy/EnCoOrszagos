@@ -7,6 +7,10 @@ namespace EnCoOrszag.ViewModell
 {
     public class ResearchViewModel
     {
-        public ICollection<TechnologyViewModel> Technologies { get; set; }
+        //public ICollection<TechnologyViewModel> Technologies { get; set; }
+
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public bool Researched { get; set; }
     }
 }

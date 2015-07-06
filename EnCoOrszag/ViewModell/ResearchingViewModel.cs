@@ -5,11 +5,11 @@ using System.Web;
 
 namespace EnCoOrszag.ViewModell
 {
-    public class ConstructionViewModel
+    public class ResearchingViewModel
     {
         public string Name { get; set; }
-        public int WholeTime { get; set; }
         public int TurnsLeft { get; set; }
+        public int WholeTime { get; set; }
 
         public int Id { get; set; }
     }

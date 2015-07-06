@@ -1,0 +1,20 @@
+﻿@model List<EnCoOrszag.ViewModell.HighScoreViewModel>
+@{
+    ViewBag.Title = "HighScore";
+}
+
+<h2>HighScore</h2>
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Score</th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Name</td>
+            <td>@item.Score</td>
+        </tr>
+    }
+</table>
+

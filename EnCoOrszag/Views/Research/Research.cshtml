@@ -1,8 +1,24 @@
-﻿@model EnCoOrszag.ViewModell.ResearchViewModel
+﻿<head>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+        }
+
+        th, td {
+            padding: 10px;
+            align-items: center;
+            align-content: center;
+        }
+    </style>
+</head>
+
+@model List<EnCoOrszag.ViewModell.ResearchViewModel>
 
 @{
     ViewBag.Title = "Research";
 }
+
+@ViewBag.Message
 
 <h2>Research</h2>
 
@@ -12,9 +28,8 @@
         <tr>
             <th>Research</th>
             <th>Description</th>
-            <th>Acquired</th>
         </tr>
-        @foreach (var item in Model.Technologies)
+        @foreach (var item in Model)
         {
             <tr>
                 <td align="left">

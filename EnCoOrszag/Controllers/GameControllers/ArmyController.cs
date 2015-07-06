@@ -20,5 +20,10 @@ namespace EnCoOrszag.Controllers.GameControllers
 
             return View();
         }
+
+        public ActionResult Recruit()
+        {
+            return View("Recruit");
+        }
 	}
 }

@@ -38,5 +38,6 @@ namespace EnCoOrszag.Models.DataAccess
         public DbSet<Researching> Researching { get; set; }
         public DbSet<Technology> Technologies { get; set; }
         public DbSet<UnitType> UnitTypes { get; set; }
+        public DbSet<Game> Game { get; set; }
     }
 }

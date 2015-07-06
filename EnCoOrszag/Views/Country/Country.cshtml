@@ -1,11 +1,51 @@
-﻿@model EnCoOrszag.ViewModell.CountryViewModel
+﻿<head>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+        }
+
+        th, td{
+            padding: 10px;
+            align-items: center;
+            align-content: center;
+        }
+    </style>
+</head>
+@model EnCoOrszag.ViewModell.CountryViewModel
 @{
     ViewBag.Title = "Country";
 }
 
-<h2>@ViewBag.Message</h2>
 
-<table border="1">
+
+<h2>Welcome to your country majesty.</h2>
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Potato</th>
+        <th>Gold</th>
+        <th>Score</th>
+        <th>
+            @using (Html.BeginForm("EndTurn", "Country", FormMethod.Get))
+            {
+                <input type="submit" value="End turn" />
+            }
+        </th>
+        <th>
+            @Html.ActionLink("Highscore", "Highscore", "Highscore")
+        </th>
+    </tr>
+    <tr>
+        <td>@Model.Name</td>
+        <td>@Model.Potato</td>
+        <td>@Model.Gold</td>
+        <td>@Model.Score</td>
+    </tr>
+</table>
+
+<br />
+
+<table>
     <tr>
         <th>Building</th>
         <th>Research</th>
@@ -14,12 +54,12 @@
     <tr>
         <td>@Html.ActionLink("Make buildings", "Building", "Building")</td>
         <td>@Html.ActionLink("Start research", "Research", "Research")</td>
-        <td>@Html.ActionLink("...", "Army", "Army")</td>
+        <td>@Html.ActionLink("Recruit", "Recruit", "Army")</td>
     </tr>
     <tr>
         <td>@Html.ActionLink("Current constructions","CurrentConstructions","Construction")</td>
-        <td>TODO</td>
-        <td>TODO</td>
+        <td>@Html.ActionLink("Current researches","CurrentResearching","Researching")</td>
+        <td>@Html.ActionLink("Armies", "Army", "Army")</td>
     </tr>
 </table>
 

@@ -167,6 +167,7 @@
     <Compile Include="Controllers\GameControllers\ConstructionController.cs" />
     <Compile Include="Controllers\GameControllers\CountryController.cs" />
     <Compile Include="Controllers\GameControllers\GroupController.cs" />
+    <Compile Include="Controllers\GameControllers\HighScoreController.cs" />
     <Compile Include="Controllers\GameControllers\ResearchController.cs" />
     <Compile Include="Controllers\GameControllers\ResearchingController.cs" />
     <Compile Include="Controllers\GameControllers\TechnologyController.cs" />
@@ -189,6 +190,7 @@
     <Compile Include="Models\DataAccess\Entities\Building.cs" />
     <Compile Include="Models\DataAccess\Entities\Construction.cs" />
     <Compile Include="Models\DataAccess\Entities\Country.cs" />
+    <Compile Include="Models\DataAccess\Entities\Game.cs" />
     <Compile Include="Models\DataAccess\Entities\Group.cs" />
     <Compile Include="Models\DataAccess\Entities\Researching.cs" />
     <Compile Include="Models\DataAccess\Entities\Research.cs" />
@@ -203,6 +205,9 @@
     <Compile Include="ViewModell\BuildingViewModel.cs" />
     <Compile Include="ViewModell\ConstructionViewModel.cs" />
     <Compile Include="ViewModell\CountryViewModel.cs" />
+    <Compile Include="ViewModell\HighScoreViewModel.cs" />
+    <Compile Include="ViewModell\RecruitViewModel.cs" />
+    <Compile Include="ViewModell\ResearchingViewModel.cs" />
     <Compile Include="ViewModell\ResearchViewModel.cs" />
     <Compile Include="ViewModell\SingelBuildingViewModel.cs" />
     <Compile Include="ViewModell\TechnologyViewModel.cs" />
@@ -273,9 +278,10 @@
     <Content Include="Views\Group\Group.cshtml" />
     <Content Include="Views\Research\Research.cshtml" />
     <Content Include="Views\UnitType\UnitType.cshtml" />
-    <Content Include="Views\Building\Response.cshtml" />
     <Content Include="Views\Research\Response.cshtml" />
     <Content Include="Views\Construction\CurrentConstruction.cshtml" />
+    <Content Include="Views\HighScore\HighScore.cshtml" />
+    <Content Include="Views\Army\Recruit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

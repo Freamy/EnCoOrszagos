@@ -29,7 +29,8 @@ namespace EnCoOrszag.Controllers.Entities
              bool logedin = manager.isLogedIn();
 
             if (logedin) { 
-                return View();
+
+                return View(manager.makeCountryViewModel());
             }
             else
             {
@@ -37,21 +38,12 @@ namespace EnCoOrszag.Controllers.Entities
             }
         }
 
-        public ActionResult Test(CountryViewModel mvC)
+        public ActionResult EndTurn()
         {
-
-            int o = 0;
-            // kikell szervezni egy manager osztalyba
-            /*
-            using (var db = new ApplicationDbContext())
-            {
-                //db...
-            }
-            */
-            //Csak uzenet nem irja be az adatbazisba.
-            o = new Manager().getGoldAmount(mvC); // <- A manager fuggveny mar beirja az adatbazisba a gold valtozast.
-            ViewBag.Message = "You recived " + mvC.Gold + " gold."+" "+o;
-            return View("Country");
+            Manager manager = new Manager();
+            manager.endTurn();
+            return Redirect(HttpContext.Request.UrlReferrer.AbsoluteUri);
         }
+
 	}
 }

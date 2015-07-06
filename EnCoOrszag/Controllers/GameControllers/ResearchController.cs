@@ -22,7 +22,10 @@ namespace EnCoOrszag.Controllers.GameControllers
         {
             Manager manager = new Manager();
 
-            ResearchViewModel vmResearch = manager.makeResearchViewModel();
+            if (TempData["Response"] != null)
+                ViewBag.Message = TempData["Response"].ToString();
+
+            List<ResearchViewModel> vmResearch = manager.makeResearchViewModel();
             return View(vmResearch);
         }
 
@@ -37,22 +40,23 @@ namespace EnCoOrszag.Controllers.GameControllers
 
             if (started)
             {
-                ViewBag.Message = "Your research has started.";
+                TempData["Response"] = "Your research has started.";
             }
             else
             {
-                ViewBag.Message = "You can't make more then one research";
+                TempData["Response"] = "You can't make more then " + manager.MAX_PARALLEL_RESEARCHES + " researches at the same time.";
             }
 
-            return View("Response");
+            return RedirectToAction("Research");
         }
 
         public ActionResult CheatResearch()
         {
             Manager manager = new Manager();
-            manager.finishResearch();
+            //manager.finishResearch();
             return RedirectToAction("Research");
 
         }
+
 	}
 }

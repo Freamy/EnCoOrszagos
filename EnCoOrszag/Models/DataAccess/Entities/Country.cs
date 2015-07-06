@@ -24,6 +24,8 @@ namespace EnCoOrszag.Models.DataAccess.Entities
         public int Gold { get; set; }
         public int Potato { get; set; }
 
+        public int Population { get; set; }
+
         public int Score { get; set; }
     }
 }

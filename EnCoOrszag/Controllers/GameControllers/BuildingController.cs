@@ -25,8 +25,10 @@ namespace EnCoOrszag.Controllers.GameControllers
 
             bool logedin = manager.isLogedIn();
 
-            if (logedin) { 
-                BuildingViewModel vmBuild = manager.makeBuildingViewModel();
+            if (logedin) {
+                if(TempData["Response"] != null)
+                    ViewBag.Message = TempData["Response"].ToString();
+                List<BuildingViewModel> vmBuild = manager.makeBuildingViewModel();
                 return View("Build", vmBuild);
             }
             else
@@ -46,20 +48,19 @@ namespace EnCoOrszag.Controllers.GameControllers
             started = manager.startConstruction(submit);
             if (started)
             {
+                TempData["Response"] = "Your construction is started.";
                 ViewBag.Message = "Your construction is started.";
             }
             else
             {
-                ViewBag.Message = "You can't make more then one building at the same time.";
+                TempData["Response"] = "You can't make more then " + manager.MAX_PARALLEL_CONSTRUCTIONS + " buildings.";
             }
-            
-            return View("Response");
+            return RedirectToAction("Building");
         }
 
         public ActionResult CheatBuilding()
         {
             Manager manager = new Manager();
-            manager.finishConstruction();
             return RedirectToAction("Building");
         }
 	}

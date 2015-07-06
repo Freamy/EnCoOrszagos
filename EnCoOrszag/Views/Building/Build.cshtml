@@ -1,18 +1,34 @@
-﻿@model EnCoOrszag.ViewModell.BuildingViewModel
+﻿<head>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+        }
+
+        th, td {
+            padding: 10px;
+            align-items: center;
+            align-content: center;
+        }
+    </style>
+</head>
+
+@model List<EnCoOrszag.ViewModell.BuildingViewModel>
 @{
     ViewBag.Title = "Build";
 }
 <h2>Build</h2>
 
+@ViewBag.Message
+
 @using (Html.BeginForm("BuildSomething", "Building", FormMethod.Post))
 {
-    <table border="0">
+    <table>
         <tr>
             <th>Construct</th>
             <th>Description</th>
             <th>#</th>
         </tr>
-        @foreach (var item in Model.Blueprints)
+        @foreach (var item in Model)
         {
 
         <tr>
