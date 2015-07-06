@@ -19,5 +19,10 @@ namespace EnCoOrszag.Controllers.GameControllers
         {
             return View("Construction");
         }
+
+        public ActionResult CancelConstruction()
+        {
+            return RedirectToAction("Building", "Building");
+        }
 	}
 }

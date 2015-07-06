@@ -275,6 +275,7 @@
     <Content Include="Views\UnitType\UnitType.cshtml" />
     <Content Include="Views\Building\Response.cshtml" />
     <Content Include="Views\Research\Response.cshtml" />
+    <Content Include="Views\Construction\CurrentConstruction.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -1,0 +1,16 @@
+﻿@model  List<EnCoOrszag.ViewModell.ConstructionViewModel>
+@{
+    ViewBag.Title = "CurrentConstruction";
+}
+
+<h2>CurrentConstruction</h2>
+
+<table>
+    @using (Html.BeginForm("CancelConstruction", "Construction", FormMethod.Post))
+    {
+        foreach (var item in Model)
+        {
+            
+        }
+    }
+</table>

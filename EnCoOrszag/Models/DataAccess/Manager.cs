@@ -84,6 +84,7 @@ namespace EnCoOrszag.Models.DataAccess
 
                 List<Technology> techList = context.Technologies.ToList<Technology>();
                 //Researches tablaban szerepel-e ez a tech ID ehez az orszaghoz
+                int activeCountryId = context.Users.First(c => c.UserName == System.Web.HttpContext.Current.User.Identity.Name).Country.Id;
                 foreach (var tech in techList)
                 {
                     TechnologyViewModel temp = new TechnologyViewModel();
@@ -91,14 +92,24 @@ namespace EnCoOrszag.Models.DataAccess
                     temp.Description = tech.Description;
                     //TODO: researched figure out!
 
-                    // THIS IS WRONG! NOT RIGHT!
-                    context.Researches.Where(
-                        m => m.Id == tech.Id
-                        ).Where(
-                            c => c.Country.Id == 1
-                        );
+                    if (context.Researches.Count() > 0)
+                    {
 
-                    temp.Researched = false;
+                         if(context.Researches.Where(
+                            m => m.Country.Id == activeCountryId
+                            ).FirstOrDefault(c => c.Technology.Id == tech.Id) != null)
+                         {
+                             temp.Researched = true;
+                         }
+                         else
+                         {
+                             temp.Researched = false;
+                         }
+                    }
+                    else
+                    {
+                        temp.Researched = false;
+                    }
                     vmTech.Add(temp);
                 }
 
@@ -245,7 +256,7 @@ namespace EnCoOrszag.Models.DataAccess
                 {
                     Research finished = new Research();
                     finished.Country = context.Countries.First(m => m.Id == activeCountryId);
-                    finished.Finished = 1;
+                    finished.Finished = true;
 
                     finished.Technology = researching.Technology;
 
