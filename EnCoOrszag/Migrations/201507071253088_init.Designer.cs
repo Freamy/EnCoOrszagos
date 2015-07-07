@@ -7,13 +7,13 @@ namespace EnCoOrszag.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.1-30610")]
-    public sealed partial class FirstMigration : IMigrationMetadata
+    public sealed partial class init : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(FirstMigration));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(init));
         
         string IMigrationMetadata.Id
         {
-            get { return "201507011018202_FirstMigration"; }
+            get { return "201507071253088_init"; }
         }
         
         string IMigrationMetadata.Source

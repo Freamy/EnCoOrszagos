@@ -21,6 +21,8 @@ namespace EnCoOrszag.Controllers.GameControllers
         public ActionResult CurrentConstructions()
         {
             Manager manager = new Manager();
+            if (TempData["Cancelled"] != null)
+                ViewBag.Message = TempData["Cancelled"].ToString();
             return View("CurrentConstruction", manager.makeConstructionViewModel());
         }
 
@@ -30,6 +32,7 @@ namespace EnCoOrszag.Controllers.GameControllers
             Manager manager = new Manager();
             manager.cancelConstruction(vmC.Id);
             ModelState.Clear();
+            TempData["Cancelled"] = "Construction cancelled.";
             return RedirectToAction("CurrentConstructions", "Construction");
         }
 	}

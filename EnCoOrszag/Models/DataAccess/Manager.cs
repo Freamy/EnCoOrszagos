@@ -141,7 +141,7 @@ namespace EnCoOrszag.Models.DataAccess
             }
         }
 
-        public bool startResearch(string researchName)
+        public string startResearch(string researchName)
         {
             using (var context = new ApplicationDbContext()) { 
                 int activeCountryId = context.Users.First(c => c.UserName == System.Web.HttpContext.Current.User.Identity.Name).Country.Id;
@@ -149,7 +149,11 @@ namespace EnCoOrszag.Models.DataAccess
                 bool canResearch = context.Researching.Count(
                     m => m.Country.Id == activeCountryId) < MAX_PARALLEL_RESEARCHES;
 
-                if (canResearch)
+                bool doingResearch = context.Researching.Where(
+                    m => m.Country.Id == activeCountryId).Count(k => k.Technology.Name == researchName) < 1;
+
+
+                if (canResearch && doingResearch)
                 {
                     Researching researchStarted = new Researching();
                     researchStarted.Technology = context.Technologies.First(m => m.Name == researchName);
@@ -161,10 +165,10 @@ namespace EnCoOrszag.Models.DataAccess
                     researchStarted.FinishTurn = context.Game.First(m => m.Id == 1).Turn + researchStarted.Technology.ResearchTime;
                     context.Researching.Add(researchStarted);
                     context.SaveChanges();
-                    return true;
+                    return "Research started.";
                 }
-
-                return false;
+                if (!doingResearch) return "You can't make multiple researches of the same type.";
+                return "You can't make more then "+MAX_PARALLEL_RESEARCHES+" researches at the same time.";
             }
         }
 
@@ -360,6 +364,26 @@ namespace EnCoOrszag.Models.DataAccess
                 }
                 vmH = vmH.OrderByDescending(m => m.Score).ToList();
                 return vmH;
+            }
+        }
+
+        public ArmyRecruitViewModel makeArmyRecruitViewModel()
+        {
+            using(var context = new ApplicationDbContext()){
+                int activeCountryId = context.Users.First(c => c.UserName == System.Web.HttpContext.Current.User.Identity.Name).Country.Id;
+                ArmyRecruitViewModel vmAR = new ArmyRecruitViewModel();
+                vmAR.Gold = context.Countries.First(m => m.Id == activeCountryId).Gold;
+                vmAR.Potato = context.Countries.First(m => m.Id == activeCountryId).Potato;
+                List<UnitType> unitList = context.UnitTypes.ToList<UnitType>();
+                List<UnitTypeViewModel> vmUnit = new List<UnitTypeViewModel>();
+                foreach (var item in unitList)
+                {
+                    UnitTypeViewModel vmUT = new UnitTypeViewModel();
+                    vmUT.Name = item.Name;
+                    vmUnit.Add(vmUT);
+                }
+                vmAR.Types = vmUnit;
+                return vmAR;
             }
         }
     }

@@ -33,19 +33,7 @@ namespace EnCoOrszag.Controllers.GameControllers
         {
             Manager manager = new Manager();
 
-
-            bool started = false;
-
-            started = manager.startResearch(submit);
-
-            if (started)
-            {
-                TempData["Response"] = "Your research has started.";
-            }
-            else
-            {
-                TempData["Response"] = "You can't make more then " + manager.MAX_PARALLEL_RESEARCHES + " researches at the same time.";
-            }
+            TempData["Response"] = manager.startResearch(submit);
 
             return RedirectToAction("Research");
         }

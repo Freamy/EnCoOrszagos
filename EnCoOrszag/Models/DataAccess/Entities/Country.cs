@@ -8,11 +8,11 @@ namespace EnCoOrszag.Models.DataAccess.Entities
     public class Country
     {
         public int Id { get; set; }
+
         public virtual ICollection<ApplicationUser> User { get; set; }
 
-
-        public virtual ICollection<Group> StandingForces { get; set; }
-        public virtual ICollection<Army> Armies { get; set; }
+        public virtual ICollection<Force> Force { get; set; }
+        public virtual ICollection<Assault> Assaults { get; set; }
 
         public virtual ICollection<Construction> Construction { get; set; }
         public virtual ICollection<Building> Buildings { get; set; }

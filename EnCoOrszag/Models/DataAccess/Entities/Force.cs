@@ -5,11 +5,11 @@ using System.Web;
 
 namespace EnCoOrszag.Models.DataAccess.Entities
 {
-    public class Group
+    public class Force
     {
         public int Id { get; set; }
-        public virtual Country Country { get; set; }
-        public virtual UnitType UnitType { get; set; }
         public int Size { get; set; }
+
+        public virtual ICollection<UnitType> Type { get; set; }
     }
 }

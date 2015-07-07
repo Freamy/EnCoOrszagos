@@ -26,6 +26,8 @@ namespace EnCoOrszag.Controllers.GameControllers
         public ActionResult CurrentResearching()
         {
             Manager manager = new Manager();
+            if (TempData["Cancel"] != null)
+                ViewBag.Message = TempData["Cancel"].ToString();
             return View("Researching", manager.makeResearchingViewModel());
         }
 
@@ -33,10 +35,9 @@ namespace EnCoOrszag.Controllers.GameControllers
         {
             Manager manager = new Manager();
             manager.cancelResearch(vmR.Id);
-            ViewBag.Message = vmR.Id;
+            TempData["Cancel"] = "Research cancelled.";
             ModelState.Clear();
-            return View("Researching", manager.makeResearchingViewModel());
-            //return RedirectToAction("Researching");
+            return RedirectToAction("CurrentResearching");
         }
 	}
 }
