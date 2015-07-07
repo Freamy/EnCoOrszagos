@@ -370,20 +370,49 @@ namespace EnCoOrszag.Models.DataAccess
         public ArmyRecruitViewModel makeArmyRecruitViewModel()
         {
             using(var context = new ApplicationDbContext()){
+
                 int activeCountryId = context.Users.First(c => c.UserName == System.Web.HttpContext.Current.User.Identity.Name).Country.Id;
+
                 ArmyRecruitViewModel vmAR = new ArmyRecruitViewModel();
                 vmAR.Gold = context.Countries.First(m => m.Id == activeCountryId).Gold;
                 vmAR.Potato = context.Countries.First(m => m.Id == activeCountryId).Potato;
                 List<UnitType> unitList = context.UnitTypes.ToList<UnitType>();
                 List<UnitTypeViewModel> vmUnit = new List<UnitTypeViewModel>();
+
+                Country country = context.Countries.First(m => m.Id == activeCountryId);
                 foreach (var item in unitList)
                 {
                     UnitTypeViewModel vmUT = new UnitTypeViewModel();
                     vmUT.Name = item.Name;
+                    vmUT.Payment = item.Payment;
+                    vmUT.Attack = item.Attack;
+                    vmUT.Defense = item.Defense;
+                    vmUT.Cost = item.Cost;
+                    vmUT.Upkeep = item.Upkeep;
+                    vmUT.Description = item.Description;
+                    Army army = country.StandingForce.FirstOrDefault(m => m.Id == item.Id);
+                    if (army == null)
+                        vmUT.Size = 0;
+                    else
+                        vmUT.Size = army.Size;
+                    vmUT.Id = item.Id;
                     vmUnit.Add(vmUT);
                 }
                 vmAR.Types = vmUnit;
                 return vmAR;
+            }
+        }
+
+        public void recruitTroops(int id, int amount)
+        {
+            using (var context = new ApplicationDbContext())
+            {
+                int activeCountryId = context.Users.First(c => c.UserName == System.Web.HttpContext.Current.User.Identity.Name).Country.Id;
+
+                Country country = context.Countries.First(m => m.Id == activeCountryId);
+
+                //country.
+                //TODO!
             }
         }
     }

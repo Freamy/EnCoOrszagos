@@ -12,5 +12,7 @@ namespace EnCoOrszag.ViewModell
         public List<UnitTypeViewModel> Types { get; set; }
 
         public int hAmount { get; set; }
+
+        public int Id { get; set; }
     }
 }

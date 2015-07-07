@@ -28,12 +28,12 @@ namespace EnCoOrszag.Models.DataAccess
             base.OnModelCreating(modelBuilder);
         }
 
-       // public DbSet<Army> Armies { get; set; }
+        public DbSet<Army> Armies { get; set; }
         public DbSet<Blueprints> Blueprints { get; set; }
         public DbSet<Building> Buildings { get; set; }
         public DbSet<Construction> Constructions { get; set; }
         public DbSet<Country> Countries { get; set; }
-        //public DbSet<Group> Groups { get; set; }
+        public DbSet<Force> Forces { get; set; }
         public DbSet<Research> Researches { get; set; }
         public DbSet<Researching> Researching { get; set; }
         public DbSet<Technology> Technologies { get; set; }

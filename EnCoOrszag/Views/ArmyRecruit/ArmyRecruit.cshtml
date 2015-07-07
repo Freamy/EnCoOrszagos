@@ -1,11 +1,59 @@
-﻿@model EnCoOrszag.ViewModell.ArmyRecruitViewModel
+﻿<head>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+        }
+
+        th, td {
+            padding: 10px;
+            align-items: center;
+            align-content: center;
+        }
+    </style>
+</head>
+
+@model EnCoOrszag.ViewModell.ArmyRecruitViewModel
 @{
     ViewBag.Title = "ArmyRecruit";
 }
 
 <h2>ArmyRecruit</h2>
 
-@foreach (var item in Model.Types)
-{
-    @item.Name <br />
-}
+@ViewBag.Message
+
+<table>
+
+    <tr>
+        <th>@Html.LabelFor(m => m.Types.ElementAt(0).Name)</th>
+        <th>Description</th>
+        <th>Attack</th>
+        <th>Defense</th>
+        <th>Recruit cost</th>
+        <th>Upkeep</th>
+        <th>Pay</th>
+        <th>In your service</th>
+    </tr>
+    @foreach (var item in Model.Types)
+    {
+        using (Html.BeginForm("Recruit", "ArmyRecruit", FormMethod.Post)) { 
+            
+        <tr>
+            <td>@item.Name</td>
+            <td>@item.Description</td>
+            <td>@item.Attack</td>
+            <td>@item.Defense</td>
+            <td>@item.Cost gold</td>
+            <td>@item.Upkeep potato/turn</td>
+            <td>@item.Payment gold/turn</td>
+            <td>@item.Size</td>
+            <td>@Html.TextAreaFor(m => m.hAmount)</td>
+            <td>
+                    <input type="submit" name="recruit" value="Recruit"/>
+            </td>
+           @Html.HiddenFor(m => m.Types.Single(k => k.Id == item.Id).Id)
+        </tr>
+        }
+    }
+
+
+</table>

@@ -13,7 +13,7 @@ namespace EnCoOrszag.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "201507071253088_init"; }
+            get { return "201507071450261_init"; }
         }
         
         string IMigrationMetadata.Source

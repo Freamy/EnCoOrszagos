@@ -8,49 +8,15 @@ namespace EnCoOrszag.Migrations
         public override void Up()
         {
             CreateTable(
-                "dbo.Armies",
-                c => new
-                    {
-                        Id = c.Int(nullable: false, identity: true),
-                        Country_Id = c.Int(),
-                        Origin_Id = c.Int(),
-                        TargetCountry_Id = c.Int(),
-                    })
-                .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.Countries", t => t.Country_Id)
-                .ForeignKey("dbo.Countries", t => t.Origin_Id)
-                .ForeignKey("dbo.Countries", t => t.TargetCountry_Id)
-                .Index(t => t.Country_Id)
-                .Index(t => t.Origin_Id)
-                .Index(t => t.TargetCountry_Id);
-            
-            CreateTable(
-                "dbo.Groups",
-                c => new
-                    {
-                        Id = c.Int(nullable: false, identity: true),
-                        Size = c.Int(nullable: false),
-                        Army_Id = c.Int(),
-                        Country_Id = c.Int(),
-                        UnitType_Id = c.Int(),
-                    })
-                .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.Armies", t => t.Army_Id)
-                .ForeignKey("dbo.Countries", t => t.Country_Id)
-                .ForeignKey("dbo.UnitTypes", t => t.UnitType_Id)
-                .Index(t => t.Army_Id)
-                .Index(t => t.Country_Id)
-                .Index(t => t.UnitType_Id);
-            
-            CreateTable(
-                "dbo.Countries",
+                "dbo.Blueprints",
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
                         Name = c.String(),
-                        Gold = c.Int(nullable: false),
-                        Potato = c.Int(nullable: false),
-                        Population = c.Int(nullable: false),
+                        Description = c.String(),
+                        Repeatable = c.Boolean(nullable: false),
+                        BuildTime = c.Int(nullable: false),
+                        Cost = c.Int(nullable: false),
                         Score = c.Int(nullable: false),
                     })
                 .PrimaryKey(t => t.Id);
@@ -71,15 +37,65 @@ namespace EnCoOrszag.Migrations
                 .Index(t => t.Country_Id);
             
             CreateTable(
-                "dbo.Blueprints",
+                "dbo.Countries",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        Name = c.String(),
+                        Gold = c.Int(nullable: false),
+                        Potato = c.Int(nullable: false),
+                        Population = c.Int(nullable: false),
+                        Score = c.Int(nullable: false),
+                        Assault_Id = c.Int(),
+                    })
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.Assaults", t => t.Assault_Id)
+                .Index(t => t.Assault_Id);
+            
+            CreateTable(
+                "dbo.Assaults",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        Target_Id = c.Int(),
+                        Country_Id = c.Int(),
+                    })
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.Countries", t => t.Target_Id)
+                .ForeignKey("dbo.Countries", t => t.Country_Id)
+                .Index(t => t.Target_Id)
+                .Index(t => t.Country_Id);
+            
+            CreateTable(
+                "dbo.Forces",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        Size = c.Int(nullable: false),
+                        Type_Id = c.Int(),
+                        Assault_Id = c.Int(),
+                        Country_Id = c.Int(),
+                    })
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.UnitTypes", t => t.Type_Id)
+                .ForeignKey("dbo.Assaults", t => t.Assault_Id)
+                .ForeignKey("dbo.Countries", t => t.Country_Id)
+                .Index(t => t.Type_Id)
+                .Index(t => t.Assault_Id)
+                .Index(t => t.Country_Id);
+            
+            CreateTable(
+                "dbo.UnitTypes",
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
                         Name = c.String(),
                         Description = c.String(),
-                        Repeatable = c.Boolean(nullable: false),
-                        BuildTime = c.Int(nullable: false),
+                        Attack = c.Int(nullable: false),
+                        Defense = c.Int(nullable: false),
                         Cost = c.Int(nullable: false),
+                        Upkeep = c.Int(nullable: false),
+                        Payment = c.Int(nullable: false),
                         Score = c.Int(nullable: false),
                     })
                 .PrimaryKey(t => t.Id);
@@ -205,22 +221,6 @@ namespace EnCoOrszag.Migrations
                 .Index(t => t.RoleId);
             
             CreateTable(
-                "dbo.UnitTypes",
-                c => new
-                    {
-                        Id = c.Int(nullable: false, identity: true),
-                        Name = c.String(),
-                        Description = c.String(),
-                        Attack = c.Int(nullable: false),
-                        Defense = c.Int(nullable: false),
-                        Cost = c.Int(nullable: false),
-                        Upkeep = c.Int(nullable: false),
-                        Payment = c.Int(nullable: false),
-                        Score = c.Int(nullable: false),
-                    })
-                .PrimaryKey(t => t.Id);
-            
-            CreateTable(
                 "dbo.Games",
                 c => new
                     {
@@ -244,24 +244,24 @@ namespace EnCoOrszag.Migrations
         public override void Down()
         {
             DropForeignKey("dbo.AspNetUserRoles", "RoleId", "dbo.AspNetRoles");
-            DropForeignKey("dbo.Armies", "TargetCountry_Id", "dbo.Countries");
-            DropForeignKey("dbo.Armies", "Origin_Id", "dbo.Countries");
-            DropForeignKey("dbo.Groups", "UnitType_Id", "dbo.UnitTypes");
             DropForeignKey("dbo.AspNetUserRoles", "UserId", "dbo.AspNetUsers");
             DropForeignKey("dbo.AspNetUserLogins", "UserId", "dbo.AspNetUsers");
             DropForeignKey("dbo.AspNetUsers", "Country_Id", "dbo.Countries");
             DropForeignKey("dbo.AspNetUserClaims", "UserId", "dbo.AspNetUsers");
-            DropForeignKey("dbo.Groups", "Country_Id", "dbo.Countries");
             DropForeignKey("dbo.Researchings", "Technology_Id", "dbo.Technologies");
             DropForeignKey("dbo.Researchings", "Country_Id", "dbo.Countries");
             DropForeignKey("dbo.Researches", "Technology_Id", "dbo.Technologies");
             DropForeignKey("dbo.Researches", "Country_Id", "dbo.Countries");
+            DropForeignKey("dbo.Forces", "Country_Id", "dbo.Countries");
             DropForeignKey("dbo.Constructions", "Country_Id", "dbo.Countries");
             DropForeignKey("dbo.Constructions", "Blueprint_Id", "dbo.Blueprints");
             DropForeignKey("dbo.Buildings", "Country_Id", "dbo.Countries");
+            DropForeignKey("dbo.Assaults", "Country_Id", "dbo.Countries");
+            DropForeignKey("dbo.Assaults", "Target_Id", "dbo.Countries");
+            DropForeignKey("dbo.Countries", "Assault_Id", "dbo.Assaults");
+            DropForeignKey("dbo.Forces", "Assault_Id", "dbo.Assaults");
+            DropForeignKey("dbo.Forces", "Type_Id", "dbo.UnitTypes");
             DropForeignKey("dbo.Buildings", "Blueprint_Id", "dbo.Blueprints");
-            DropForeignKey("dbo.Armies", "Country_Id", "dbo.Countries");
-            DropForeignKey("dbo.Groups", "Army_Id", "dbo.Armies");
             DropIndex("dbo.AspNetRoles", "RoleNameIndex");
             DropIndex("dbo.AspNetUserRoles", new[] { "RoleId" });
             DropIndex("dbo.AspNetUserRoles", new[] { "UserId" });
@@ -275,17 +275,16 @@ namespace EnCoOrszag.Migrations
             DropIndex("dbo.Researches", new[] { "Country_Id" });
             DropIndex("dbo.Constructions", new[] { "Country_Id" });
             DropIndex("dbo.Constructions", new[] { "Blueprint_Id" });
+            DropIndex("dbo.Forces", new[] { "Country_Id" });
+            DropIndex("dbo.Forces", new[] { "Assault_Id" });
+            DropIndex("dbo.Forces", new[] { "Type_Id" });
+            DropIndex("dbo.Assaults", new[] { "Country_Id" });
+            DropIndex("dbo.Assaults", new[] { "Target_Id" });
+            DropIndex("dbo.Countries", new[] { "Assault_Id" });
             DropIndex("dbo.Buildings", new[] { "Country_Id" });
             DropIndex("dbo.Buildings", new[] { "Blueprint_Id" });
-            DropIndex("dbo.Groups", new[] { "UnitType_Id" });
-            DropIndex("dbo.Groups", new[] { "Country_Id" });
-            DropIndex("dbo.Groups", new[] { "Army_Id" });
-            DropIndex("dbo.Armies", new[] { "TargetCountry_Id" });
-            DropIndex("dbo.Armies", new[] { "Origin_Id" });
-            DropIndex("dbo.Armies", new[] { "Country_Id" });
             DropTable("dbo.AspNetRoles");
             DropTable("dbo.Games");
-            DropTable("dbo.UnitTypes");
             DropTable("dbo.AspNetUserRoles");
             DropTable("dbo.AspNetUserLogins");
             DropTable("dbo.AspNetUserClaims");
@@ -294,11 +293,12 @@ namespace EnCoOrszag.Migrations
             DropTable("dbo.Technologies");
             DropTable("dbo.Researches");
             DropTable("dbo.Constructions");
-            DropTable("dbo.Blueprints");
-            DropTable("dbo.Buildings");
+            DropTable("dbo.UnitTypes");
+            DropTable("dbo.Forces");
+            DropTable("dbo.Assaults");
             DropTable("dbo.Countries");
-            DropTable("dbo.Groups");
-            DropTable("dbo.Armies");
+            DropTable("dbo.Buildings");
+            DropTable("dbo.Blueprints");
         }
     }
 }
