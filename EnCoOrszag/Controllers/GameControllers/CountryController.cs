@@ -41,8 +41,7 @@ namespace EnCoOrszag.Controllers.Entities
         public ActionResult EndTurn()
         {
             Manager manager = new Manager();
-            for (int i = 0; i < 500000; i++ )
-                manager.endTurn();
+            manager.endTurn();
             return Redirect(HttpContext.Request.UrlReferrer.AbsoluteUri);
         }
 

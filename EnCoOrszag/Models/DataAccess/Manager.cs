@@ -180,7 +180,7 @@ namespace EnCoOrszag.Models.DataAccess
                 int turn = context.Game.First(m => m.Id == 1).Turn + 1;
                 context.Game.First(m => m.Id == 1).Turn = turn;
                 countries = payTaxesAndPotato(countries);
-                //countries = dealWithArmy();
+                countries = dealWithArmy(countries);
                 countries = finishResearchs(countries, turn);
                 countries = finishBuildings(countries, turn);
                 context.Constructions.RemoveRange(context.Constructions.Where(m => m.Country == null));
@@ -191,6 +191,25 @@ namespace EnCoOrszag.Models.DataAccess
             
             //finishConstruction();
             //finishResearch();
+        }
+
+        public List<Country> dealWithArmy(List<Country> countries)
+        {
+            using (var context = new ApplicationDbContext())
+            {
+                foreach (var c in countries)
+                {
+                    int gold = 0;
+                    int potato = 0;
+                    List<Army> armies = c.StandingForce.ToList<Army>();
+                    foreach (var a in armies)
+                    {
+                        int size = a.Size;
+                        gold += context.UnitTypes.First(m => m.Id == a.Type.Id).Payment;
+                    }
+                }
+                return countries;
+            }
         }
 
         public List<Country> payTaxesAndPotato(List<Country> countries)
@@ -390,7 +409,7 @@ namespace EnCoOrszag.Models.DataAccess
                     vmUT.Cost = item.Cost;
                     vmUT.Upkeep = item.Upkeep;
                     vmUT.Description = item.Description;
-                    Army army = country.StandingForce.FirstOrDefault(m => m.Id == item.Id);
+                    Army army = country.StandingForce.FirstOrDefault(m => m.Type.Id == item.Id);
                     if (army == null)
                         vmUT.Size = 0;
                     else
@@ -403,17 +422,48 @@ namespace EnCoOrszag.Models.DataAccess
             }
         }
 
-        public void recruitTroops(int id, int amount)
+        public string recruitTroops(int id, int amount)
         {
-            using (var context = new ApplicationDbContext())
+            if (amount > 0)
             {
-                int activeCountryId = context.Users.First(c => c.UserName == System.Web.HttpContext.Current.User.Identity.Name).Country.Id;
+                using (var context = new ApplicationDbContext())
+                {
+                    int activeCountryId = context.Users.First(c => c.UserName == System.Web.HttpContext.Current.User.Identity.Name).Country.Id;
 
-                Country country = context.Countries.First(m => m.Id == activeCountryId);
+                    Country country = context.Countries.First(m => m.Id == activeCountryId);
+                    //List<Army> armies = context.Armies.Where(m => m. == activeCountryId).ToList<Army>();
+                    List<Army> armies = country.StandingForce.ToList<Army>();
+                    int armySize = 0;
+                    foreach (var item in armies)
+                    {
+                        armySize += item.Size;
+                    }
+                    int cost = context.UnitTypes.First(m => m.Id == id).Cost;
+                    bool enoughPlace = context.Buildings.Where(m => m.Country.Id == activeCountryId).First(m => m.Blueprint.Name == "Barrack").NumberOfBuildings*200 >=
+                       (armySize + amount);
 
-                //country.
-                //TODO!
+                    if (country.Gold >= cost * amount && enoughPlace)
+                    {
+                        Army standing = country.StandingForce.FirstOrDefault(m => m.Type == context.UnitTypes.First(k => k.Id == id));
+                        if (standing == null)
+                        {
+                            standing = new Army();
+                            standing.Type = context.UnitTypes.First(m => m.Id == id);
+
+                            standing.Size = amount;
+                            country.StandingForce.Add(standing);
+                        }
+                        else
+                        {
+                            country.StandingForce.First(m => m.Type == context.UnitTypes.First(k => k.Id == id)).Size += amount;
+                        }
+                        context.SaveChanges();
+                        return "You recruited the troops.";
+                    }
+                    //TODO!
+                }
             }
+            return "You can't recruit this many troops, make sure you have enough gold and/or living quarters.";
         }
     }
 }

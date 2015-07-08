@@ -22,7 +22,7 @@ namespace EnCoOrszag.Controllers.GameControllers
         {
             if (TempData["ID"] != null)
             {
-                ViewBag.Message = TempData["ID"].ToString() +" "+ TempData["Amount"].ToString();
+                ViewBag.Message = TempData["ID"].ToString() +" "+ TempData["Amount"].ToString()+" "+TempData["Message"].ToString();
             }
             return View(new Manager().makeArmyRecruitViewModel());
         }
@@ -32,7 +32,8 @@ namespace EnCoOrszag.Controllers.GameControllers
             TempData["ID"] = vmAR.Id;
             TempData["Amount"] = vmAR.hAmount;
             ModelState.Clear();
-            new Manager().recruitTroops(vmAR.Id, vmAR.hAmount);
+            string message =  new Manager().recruitTroops(vmAR.Id, vmAR.hAmount);
+            TempData["Message"] = message;
           //  return View("ArmyRecruit", new Manager().makeArmyRecruitViewModel());
             return RedirectToAction("ArmyRecruit");
         }
