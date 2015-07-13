@@ -199,6 +199,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModell\ArmyRecruitViewModel.cs" />
+    <Compile Include="ViewModell\AssaultsCollectModel.cs" />
     <Compile Include="ViewModell\AssaultViewModel.cs" />
     <Compile Include="ViewModell\BlueprintsViewModel.cs" />
     <Compile Include="ViewModell\BuildingViewModel.cs" />
@@ -217,6 +218,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Scripts\angular.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />

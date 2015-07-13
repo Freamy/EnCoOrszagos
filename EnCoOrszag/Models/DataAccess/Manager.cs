@@ -173,7 +173,7 @@ namespace EnCoOrszag.Models.DataAccess
         }
 
 
-        public void endTurn()
+        public string endTurn()
         {
             using(var context = new ApplicationDbContext()){
                 List<Country> countries = context.Countries.ToList();
@@ -183,14 +183,114 @@ namespace EnCoOrszag.Models.DataAccess
                 countries = dealWithArmy(countries);
                 countries = finishResearchs(countries, turn);
                 countries = finishBuildings(countries, turn);
+
                 context.Constructions.RemoveRange(context.Constructions.Where(m => m.Country == null));
                 context.Researching.RemoveRange(context.Researching.Where(m => m.Country == null));
-                
+
+                countries = battle(countries);
+                countries = armiesReturnHome(countries);
+
+                context.Assaults.RemoveRange(context.Assaults);
+                context.Forces.RemoveRange(context.Forces);
+
                 context.SaveChanges();
+                return globalFake;
             }
             
             //finishConstruction();
             //finishResearch();
+        }
+
+        public List<Country> armiesReturnHome(List<Country> countries)
+        {
+            using (var context = new ApplicationDbContext())
+            {
+                foreach (var c in countries)
+                {
+                    foreach (var a in c.Assaults)
+                    {
+                        foreach (var f in a.Forces)
+                        {
+                            if (c.StandingForce.FirstOrDefault(m => m.Type.Id == f.Type.Id) != null)
+                            {
+                                c.StandingForce.FirstOrDefault(m => m.Type.Id == f.Type.Id).Size += f.Size;
+                            }
+                            else
+                            {
+                                Army army = new Army();
+                                army.Size = f.Size;
+                                army.Type = f.Type;
+                                c.StandingForce.Add(army);
+                            }
+                        }
+                        a.Forces.Clear();
+                    }
+                    c.Assaults.Clear();
+                }
+                return countries;
+            }
+        }
+
+        string globalFake = "";
+
+        public List<Country> battle(List<Country> countries)
+        {
+            globalFake = "";
+            using (var context = new ApplicationDbContext())
+            {
+                foreach (var c in countries)
+                {
+                    foreach (var a in c.Assaults)
+                    {
+                        Country aim = a.Target;
+                        if (aim != c)
+                        {
+                            List<Army> standing = aim.StandingForce.ToList<Army>();
+
+                            float attackBonus = 1;
+                            if (c.Researches.FirstOrDefault(m => m.Technology.Name == "Operation Rebirth") != null) attackBonus += 0.2f;
+                            if (c.Researches.FirstOrDefault(m => m.Technology.Name == "Tactics") != null) attackBonus += 0.1f;
+
+                            float defenseBonus = 1;
+                            if (aim.Researches.FirstOrDefault(m => m.Technology.Name == "City walls") != null) defenseBonus += 0.2f;
+                            if (aim.Researches.FirstOrDefault(m => m.Technology.Name == "Tactics") != null) defenseBonus += 0.1f;
+
+                            int attackPower = 0;
+                            foreach (var f in a.Forces)
+                            {
+                                attackPower += f.Size * f.Type.Attack;
+                            }
+
+                            int defensivePower = 0;
+                            foreach (var f in aim.StandingForce)
+                            {
+                                defensivePower += f.Size * f.Type.Defense;
+                            }
+
+                            attackPower = (int)(attackPower * attackBonus);
+                            defensivePower = (int)(defensivePower * defenseBonus);
+                            //TODO: this is not suposed to be here.
+                            globalFake += "Assault from: " + c.Name + " to " + aim.Name + " with " + attackPower + " power against " + defensivePower;
+
+                            if (attackPower > defensivePower)
+                            {
+                                c.Gold += aim.Gold / 2;
+                                aim.Gold -= aim.Gold / 2;
+
+                                c.Potato += aim.Potato / 2;
+                                aim.Potato -= aim.Potato / 2;
+
+                                foreach(var lost in aim.StandingForce.ToList<Army>()) lost.Size = (int)(lost.Size * 0.9f);
+                            }
+                            else
+                            {
+                                foreach (var lost in a.Forces.ToList<Force>()) lost.Size = (int)(lost.Size * 0.9f);
+                            }
+                        }
+                    }
+                }
+                return countries;
+            }
         }
 
         public List<Country> dealWithArmy(List<Country> countries)
@@ -205,8 +305,20 @@ namespace EnCoOrszag.Models.DataAccess
                     foreach (var a in armies)
                     {
                         int size = a.Size;
-                        gold += context.UnitTypes.First(m => m.Id == a.Type.Id).Payment;
+                        gold += context.UnitTypes.First(m => m.Id == a.Type.Id).Payment * size;
+                        potato += context.UnitTypes.First(m => m.Id == a.Type.Id).Upkeep * size;
                     }
+                    foreach (var a in c.Assaults)
+                    {
+                        foreach (var f in a.Forces)
+                        {
+                            int size = f.Size;
+                            gold += context.UnitTypes.First(m => m.Id == f.Type.Id).Payment * size;
+                            potato += context.UnitTypes.First(m => m.Id == f.Type.Id).Upkeep * size;
+                        }
+                    }
+                    c.Gold -= gold;
+                    c.Potato -= potato;
                 }
                 return countries;
             }
@@ -431,7 +543,6 @@ namespace EnCoOrszag.Models.DataAccess
                     int activeCountryId = context.Users.First(c => c.UserName == System.Web.HttpContext.Current.User.Identity.Name).Country.Id;
 
                     Country country = context.Countries.First(m => m.Id == activeCountryId);
-                    //List<Army> armies = context.Armies.Where(m => m. == activeCountryId).ToList<Army>();
                     List<Army> armies = country.StandingForce.ToList<Army>();
                     int armySize = 0;
                     foreach (var item in armies)
@@ -445,25 +556,63 @@ namespace EnCoOrszag.Models.DataAccess
                     if (country.Gold >= cost * amount && enoughPlace)
                     {
                         Army standing = country.StandingForce.FirstOrDefault(m => m.Type == context.UnitTypes.First(k => k.Id == id));
+                        UnitType ut = context.UnitTypes.First(m => m.Id == id);
                         if (standing == null)
                         {
                             standing = new Army();
-                            standing.Type = context.UnitTypes.First(m => m.Id == id);
+                            standing.Type = ut;
 
                             standing.Size = amount;
                             country.StandingForce.Add(standing);
                         }
                         else
                         {
-                            country.StandingForce.First(m => m.Type == context.UnitTypes.First(k => k.Id == id)).Size += amount;
+                            country.StandingForce.First(m => m.Type == ut).Size += amount;
                         }
+                        country.Gold -= ut.Cost * amount;
                         context.SaveChanges();
                         return "You recruited the troops.";
                     }
-                    //TODO!
                 }
             }
             return "You can't recruit this many troops, make sure you have enough gold and/or living quarters.";
+        }
+
+        public AssaultViewModel makeAssaultViewModel()
+        {
+            using (var context = new ApplicationDbContext())
+            {
+                int activeCountryId = context.Users.First(c => c.UserName == System.Web.HttpContext.Current.User.Identity.Name).Country.Id;
+                AssaultViewModel vmAssault = new AssaultViewModel();
+
+                vmAssault.Countries = context.Countries.ToList<Country>();
+
+                Country country = context.Countries.First(m => m.Id == activeCountryId);
+
+                List<Army> armies = new List<Army>();
+
+                foreach (var item in country.StandingForce.ToList<Army>())
+                {
+                    Army army = new Army();
+                    army.Size = item.Size;
+                    UnitType ut = new UnitType();
+                    ut.Name = item.Type.Name;
+                    ut.Attack = item.Type.Attack;
+                    ut.Defense = item.Type.Defense;
+                    ut.Description = item.Type.Description;
+                    army.Type = ut;
+                    armies.Add(army);
+                }
+
+                
+               // vmAssault.Armies = country.StandingForce.ToList<Army>();
+                vmAssault.Armies = armies;
+
+                AssaultsCollectModel cmAssault = new AssaultsCollectModel();
+
+
+                return vmAssault;
+            }
         }
     }
 }

@@ -4,6 +4,9 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
+using EnCoOrszag.Models.DataAccess;
+using EnCoOrszag.ViewModell;
+
 namespace EnCoOrszag.Controllers.GameControllers
 {
     public class AssaultController : Controller
@@ -16,7 +19,9 @@ namespace EnCoOrszag.Controllers.GameControllers
 
         public ActionResult Assault()
         {
-            return View();
+            Manager manager = new Manager();
+            AssaultViewModel vmA = manager.makeAssaultViewModel();
+            return View(vmA);
         }
     }
 }

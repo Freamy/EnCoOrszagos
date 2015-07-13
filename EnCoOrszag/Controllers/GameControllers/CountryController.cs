@@ -26,10 +26,10 @@ namespace EnCoOrszag.Controllers.Entities
         public ActionResult Country()
         {
             Manager manager = new Manager();
-             bool logedin = manager.isLogedIn();
+            bool logedin = manager.isLogedIn();
 
-            if (logedin) { 
-
+            if (logedin) {
+                if (TempData["Message"] != null) ViewBag.Message = TempData["Message"].ToString();
                 return View(manager.makeCountryViewModel());
             }
             else
@@ -41,7 +41,7 @@ namespace EnCoOrszag.Controllers.Entities
         public ActionResult EndTurn()
         {
             Manager manager = new Manager();
-            manager.endTurn();
+            TempData["Message"] = manager.endTurn();
             return Redirect(HttpContext.Request.UrlReferrer.AbsoluteUri);
         }
 

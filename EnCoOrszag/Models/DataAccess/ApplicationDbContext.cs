@@ -29,6 +29,7 @@ namespace EnCoOrszag.Models.DataAccess
         }
 
         public DbSet<Army> Armies { get; set; }
+        public DbSet<Assault> Assaults { get; set; }
         public DbSet<Blueprints> Blueprints { get; set; }
         public DbSet<Building> Buildings { get; set; }
         public DbSet<Construction> Constructions { get; set; }

@@ -11,6 +11,8 @@ namespace EnCoOrszag.Models.DataAccess.Entities
 
         public virtual ICollection<Force> Forces { get; set; }
         public virtual ICollection<Country> Origin { get; set; }
+        
+
         public virtual Country Target { get; set; }
     }
 }

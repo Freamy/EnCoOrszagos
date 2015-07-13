@@ -12,7 +12,7 @@ namespace EnCoOrszag.Models.DataAccess.Entities
         public virtual ICollection<ApplicationUser> User { get; set; }
 
         public virtual ICollection<Army> StandingForce { get; set; }
-        public virtual ICollection<Assault> Assaults { get; set; }
+       public virtual ICollection<Assault> Assaults { get; set; }
 
         public virtual ICollection<Construction> Construction { get; set; }
         public virtual ICollection<Building> Buildings { get; set; }

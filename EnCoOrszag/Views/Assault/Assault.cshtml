@@ -1,7 +1,44 @@
-﻿
+﻿<head>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+        }
+
+        th, td {
+            padding: 10px;
+            align-items: center;
+            align-content: center;
+        }
+    </style>
+</head>
+
+@model EnCoOrszag.ViewModell.AssaultViewModel
+
 @{
     ViewBag.Title = "Assault";
 }
 
 <h2>Assault</h2>
 
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Amount</th>
+        <th>Attack power</th>
+        <th>Defensive power</th>
+    </tr>
+    
+        @foreach (var item in Model.Armies)
+        {
+            <tr>
+                <td>@item.Type.Name</td>
+                <td>@item.Type.Description</td>
+                <td>@item.Size</td>
+                <td>@item.Type.Attack / unit</td>
+                <td>@item.Type.Defense / unit</td>
+            </tr>
+        }    
+</table>
+
+Assault: @Html.DropDownListFor(m => m.Countries, new SelectList(Model.Countries.ToList()))
