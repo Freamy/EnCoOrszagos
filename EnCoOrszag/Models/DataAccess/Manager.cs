@@ -193,12 +193,42 @@ namespace EnCoOrszag.Models.DataAccess
                 context.Assaults.RemoveRange(context.Assaults);
                 context.Forces.RemoveRange(context.Forces);
 
+                countries = calculateHighScore(countries);
+
                 context.SaveChanges();
                 return globalFake;
             }
             
             //finishConstruction();
             //finishResearch();
+        }
+
+        public List<Country> calculateHighScore(List<Country> countries)
+        {
+            using (var context = new ApplicationDbContext())
+            {
+                foreach (var c in countries)
+                {
+                    // Calculate population
+                    c.Score += c.Population;
+                    //  Calculate buildings
+                    foreach (var b in c.Buildings)
+                    {
+                        c.Score += b.NumberOfBuildings * b.Blueprint.Score;
+                    }
+                    // Calculate armies
+                    foreach (var a in c.StandingForce)
+                    {
+                        c.Score += a.Size * a.Type.Score;
+                    }
+                    // Calculate researches
+                    foreach (var r in c.Researches)
+                    {
+                        c.Score += r.Technology.Score;
+                    }
+                }
+                return countries;
+            }
         }
 
         public List<Country> armiesReturnHome(List<Country> countries)
@@ -331,8 +361,8 @@ namespace EnCoOrszag.Models.DataAccess
                 if (c.Buildings.Count(m => m.Blueprint.Name == "Cottage") > 0)
                 {
                     int noCottages = c.Buildings.First(i => i.Blueprint.Name == "Cottage").NumberOfBuildings;
-                    int tax = noCottages * 50 * 25;
-                    c.Score += noCottages * 50;
+                    int tax = c.Population * 25;
+                   // c.Score += noCottages * 50;
                     int potato = noCottages * 200;
                     float goldBonuses = 1;
                     float potatoBonus = 1;
@@ -364,7 +394,7 @@ namespace EnCoOrszag.Models.DataAccess
                         rs.Technology = c.Researching.First(i => i.Technology.Id == r.Technology.Id).Technology;
                         rs.Finished = true;
                         c.Researches.Add(rs);
-                        c.Score += rs.Technology.Score;
+                       // c.Score += rs.Technology.Score;
                         c.Researching.Remove(c.Researching.Single(m => m.Id == r.Id));
                     }
                 }
@@ -389,8 +419,8 @@ namespace EnCoOrszag.Models.DataAccess
                         bs.Blueprint = b.Blueprint;
                         bs.Country = c;
                         bs.NumberOfBuildings += 1;
-                        
-                        c.Score += 50;
+                        if (b.Blueprint.Name == "Cottage") c.Population += 50;
+                       // c.Score += 50;
                         c.Construction.Remove(c.Construction.Single(m => m.Id == b.Id));
                     }
                 }
@@ -459,6 +489,7 @@ namespace EnCoOrszag.Models.DataAccess
                 vmCountry.Score = country.Score;
                 vmCountry.Gold = country.Gold;
                 vmCountry.Potato = country.Potato;
+                vmCountry.Turn = context.Game.First(m => m.Id == 1).Turn;
                 return vmCountry;
             }
         }

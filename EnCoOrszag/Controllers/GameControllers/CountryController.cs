@@ -42,7 +42,8 @@ namespace EnCoOrszag.Controllers.Entities
         {
             Manager manager = new Manager();
             TempData["Message"] = manager.endTurn();
-            return Redirect(HttpContext.Request.UrlReferrer.AbsoluteUri);
+            RedirectToAction("country");
+            return RedirectToAction("Country");
         }
 
 	}

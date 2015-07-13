@@ -5,6 +5,8 @@ VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EnCoOrszag", "EnCoOrszag\EnCoOrszag.csproj", "{491F6662-087E-4A7E-B376-5B8F8ECE2ECC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimedService", "..\Users\pinter.richard\Documents\Visual Studio 2013\Projects\TimedService\TimedService\TimedService.csproj", "{DA2046AE-B3E9-4FCE-8D44-379500B409FE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{491F6662-087E-4A7E-B376-5B8F8ECE2ECC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{491F6662-087E-4A7E-B376-5B8F8ECE2ECC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{491F6662-087E-4A7E-B376-5B8F8ECE2ECC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA2046AE-B3E9-4FCE-8D44-379500B409FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA2046AE-B3E9-4FCE-8D44-379500B409FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA2046AE-B3E9-4FCE-8D44-379500B409FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA2046AE-B3E9-4FCE-8D44-379500B409FE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

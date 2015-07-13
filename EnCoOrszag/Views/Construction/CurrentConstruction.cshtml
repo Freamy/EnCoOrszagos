@@ -34,7 +34,7 @@
                 <tr>
                     <td>@item.Name</td>
                     <td><progress value=@item.TurnsLeft max=@item.WholeTime></progress></td>
-                    <td><input type="submit" name="cancel" value="Cancel"/> @item.Id</td>
+                    <td><input type="submit" name="cancel" value="Cancel"/> (@item.TurnsLeft/@item.WholeTime turns)</td>
                     @Html.HiddenFor(m => m.Single(k => k.Id == item.Id).Id)
                 </tr>
             }

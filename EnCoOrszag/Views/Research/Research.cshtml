@@ -24,7 +24,7 @@
 
 @using (Html.BeginForm("ResearchSomething","Research",FormMethod.Post))
 {
-    <table border="0">
+    <table>
         <tr>
             <th>Research</th>
             <th>Description</th>
@@ -44,7 +44,3 @@
     </table>
 }
 <br />
-@using (Html.BeginForm("CheatResearch", "Research", FormMethod.Post))
-{
-    <input type="submit" name="submit" value="Finish Research" />
-}
