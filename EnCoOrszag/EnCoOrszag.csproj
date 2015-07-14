@@ -272,7 +272,6 @@
     <Content Include="Views\Building\Build.cshtml" />
     <Content Include="Views\Construction\Construction.cshtml" />
     <Content Include="Views\Researching\Researching.cshtml" />
-    <Content Include="Views\Blueprint\Blueprint.cshtml" />
     <Content Include="Views\Research\Research.cshtml" />
     <Content Include="Views\Construction\CurrentConstruction.cshtml" />
     <Content Include="Views\HighScore\HighScore.cshtml" />

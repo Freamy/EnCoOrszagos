@@ -20,21 +20,28 @@ namespace EnCoOrszag.Controllers.GameControllers
 
         public ActionResult ArmyRecruit()
         {
-            if (TempData["ID"] != null)
+            Manager manager = new Manager();
+            bool logedin = manager.isLogedIn();
+            if (logedin)
             {
-                ViewBag.Message = TempData["ID"].ToString() +" "+ TempData["Amount"].ToString()+" "+TempData["Message"].ToString();
+                if (TempData["Message"] != null)
+                {
+                    ViewBag.Message = TempData["Message"].ToString();
+                }
+                return View(manager.makeArmyRecruitViewModel());
             }
-            return View(new Manager().makeArmyRecruitViewModel());
+            else
+            {
+                ViewBag.Message = "Please register a new user.";
+                return RedirectToAction("Login", "Account");
+            }
         }
 
         public ActionResult Recruit(ArmyRecruitViewModel vmAR)
         {
-            TempData["ID"] = vmAR.Id;
-            TempData["Amount"] = vmAR.hAmount;
             ModelState.Clear();
             string message =  new Manager().recruitTroops(vmAR.Id, vmAR.hAmount);
             TempData["Message"] = message;
-          //  return View("ArmyRecruit", new Manager().makeArmyRecruitViewModel());
             return RedirectToAction("ArmyRecruit");
         }
     }

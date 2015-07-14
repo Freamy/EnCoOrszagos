@@ -53,7 +53,7 @@ namespace EnCoOrszag.Controllers.GameControllers
             }
             else
             {
-                TempData["Response"] = "You can't make more then " + manager.MAX_PARALLEL_CONSTRUCTIONS + " buildings.";
+                TempData["Response"] = "You can't make more than " + manager.MAX_PARALLEL_CONSTRUCTIONS + " buildings.";
             }
             return RedirectToAction("Building");
         }

@@ -22,11 +22,22 @@ namespace EnCoOrszag.Controllers.GameControllers
         {
             Manager manager = new Manager();
 
-            if (TempData["Response"] != null)
-                ViewBag.Message = TempData["Response"].ToString();
+            bool logedin = manager.isLogedIn();
 
-            List<ResearchViewModel> vmResearch = manager.makeResearchViewModel();
-            return View(vmResearch);
+            if (logedin)
+            {
+
+                if (TempData["Response"] != null)
+                    ViewBag.Message = TempData["Response"].ToString();
+
+                List<ResearchViewModel> vmResearch = manager.makeResearchViewModel();
+                return View(vmResearch);
+            }
+            else
+            {
+                ViewBag.Message = "Please register a new user.";
+                return RedirectToAction("Login", "Account");
+            }
         }
 
         public ActionResult ResearchSomething(string submit)

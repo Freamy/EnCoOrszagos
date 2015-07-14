@@ -42,8 +42,6 @@ namespace EnCoOrszag.Models.DataAccess
                     vmTemp.Cost = item.Cost;
                     vmTemp.Description = item.Description;
                     vmTemp.Repeatable = item.Repeatable;
-                    //TODO: ez a foreach biztosan kivalthato egy SQL-el!
-
                     foreach (var building in buildingList)
                     {
                         if(building.Blueprint == item){
@@ -73,11 +71,9 @@ namespace EnCoOrszag.Models.DataAccess
                     ResearchViewModel temp = new ResearchViewModel();
                     temp.Name = tech.Name;
                     temp.Description = tech.Description;
-                    
 
                     if (context.Researches.Count() > 0)
                     {
-
                          if(context.Researches.Where(
                             m => m.Country.Id == activeCountryId
                             ).FirstOrDefault(c => c.Technology.Id == tech.Id) != null)
@@ -168,7 +164,7 @@ namespace EnCoOrszag.Models.DataAccess
                     return "Research started.";
                 }
                 if (!doingResearch) return "You can't make multiple researches of the same type.";
-                return "You can't make more then "+MAX_PARALLEL_RESEARCHES+" researches at the same time.";
+                return "You can't make more than "+MAX_PARALLEL_RESEARCHES+" researches at the same time.";
             }
         }
 
@@ -299,6 +295,7 @@ namespace EnCoOrszag.Models.DataAccess
 
                             attackPower = (int)(attackPower * attackBonus);
                             defensivePower = (int)(defensivePower * defenseBonus);
+
                             //TODO: this is not suposed to be here.
                             globalFake += "Assault from: " + c.Name + " to " + aim.Name + " with " + attackPower + " power against " + defensivePower;
 
@@ -362,18 +359,21 @@ namespace EnCoOrszag.Models.DataAccess
                 {
                     int noCottages = c.Buildings.First(i => i.Blueprint.Name == "Cottage").NumberOfBuildings;
                     int tax = c.Population * 25;
-                   // c.Score += noCottages * 50;
                     int potato = noCottages * 200;
                     float goldBonuses = 1;
                     float potatoBonus = 1;
+
                     Research temp = c.Researches.FirstOrDefault(m => m.Technology.Name == "Tractor");
                     if (temp != null && temp.Finished) potatoBonus += 0.1f;
+
                     temp = c.Researches.FirstOrDefault(m => m.Technology.Name == "Harvester");
                     if (temp != null && temp.Finished) potatoBonus += 0.15f;
+
                     temp = c.Researches.FirstOrDefault(m => m.Technology.Name == "Alchemy");
                     if (temp != null && temp.Finished) goldBonuses += 0.3f;
-                    tax = (int)(tax * goldBonuses);
+                    
                     potato = (int)(potato * potatoBonus);
+                    tax = (int)(tax * goldBonuses);
                     c.Gold += tax;
                     c.Potato += potato;
                 }
@@ -394,7 +394,6 @@ namespace EnCoOrszag.Models.DataAccess
                         rs.Technology = c.Researching.First(i => i.Technology.Id == r.Technology.Id).Technology;
                         rs.Finished = true;
                         c.Researches.Add(rs);
-                       // c.Score += rs.Technology.Score;
                         c.Researching.Remove(c.Researching.Single(m => m.Id == r.Id));
                     }
                 }
@@ -420,7 +419,6 @@ namespace EnCoOrszag.Models.DataAccess
                         bs.Country = c;
                         bs.NumberOfBuildings += 1;
                         if (b.Blueprint.Name == "Cottage") c.Population += 50;
-                       // c.Score += 50;
                         c.Construction.Remove(c.Construction.Single(m => m.Id == b.Id));
                     }
                 }
@@ -471,7 +469,6 @@ namespace EnCoOrszag.Models.DataAccess
                     element.Id = item.Id;
                     vmResearchList.Add(element);
                 }
-
                 return vmResearchList;
             }
         }
@@ -542,6 +539,7 @@ namespace EnCoOrszag.Models.DataAccess
                 List<UnitTypeViewModel> vmUnit = new List<UnitTypeViewModel>();
 
                 Country country = context.Countries.First(m => m.Id == activeCountryId);
+                int sum = 0;
                 foreach (var item in unitList)
                 {
                     UnitTypeViewModel vmUT = new UnitTypeViewModel();
@@ -558,9 +556,16 @@ namespace EnCoOrszag.Models.DataAccess
                     else
                         vmUT.Size = army.Size;
                     vmUT.Id = item.Id;
+                    sum += vmUT.Size;
                     vmUnit.Add(vmUT);
                 }
                 vmAR.Types = vmUnit;
+                vmAR.OccupiedSpace = sum;
+                Building building = context.Buildings.Where(m => m.Country.Id == activeCountryId).FirstOrDefault(m => m.Blueprint.Name == "Barrack");
+                if (building == null) sum = 0;
+                else sum = building.NumberOfBuildings;
+                sum = sum * 200;
+                vmAR.AllSpace = sum;
                 return vmAR;
             }
         }

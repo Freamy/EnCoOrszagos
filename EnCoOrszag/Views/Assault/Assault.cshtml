@@ -27,18 +27,5 @@
         <th>Amount</th>
         <th>Attack power</th>
         <th>Defensive power</th>
-    </tr>
-    
-        @foreach (var item in Model.Armies)
-        {
-            <tr>
-                <td>@item.Type.Name</td>
-                <td>@item.Type.Description</td>
-                <td>@item.Size</td>
-                <td>@item.Type.Attack / unit</td>
-                <td>@item.Type.Defense / unit</td>
-            </tr>
-        }    
+    </tr>  
 </table>
-
-Assault: @Html.DropDownListFor(m => m.Countries, new SelectList(Model.Countries.ToList()))

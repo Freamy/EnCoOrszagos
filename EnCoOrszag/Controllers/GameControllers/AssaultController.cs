@@ -20,8 +20,15 @@ namespace EnCoOrszag.Controllers.GameControllers
         public ActionResult Assault()
         {
             Manager manager = new Manager();
-            AssaultViewModel vmA = manager.makeAssaultViewModel();
-            return View(vmA);
+            if (manager.isLogedIn()) { 
+                AssaultViewModel vmA = manager.makeAssaultViewModel();
+                return View(vmA);
+            }
+            else
+            {
+                ViewBag.Message = "Please register a new user.";
+                return RedirectToAction("Login", "Account");
+            }
         }
     }
 }

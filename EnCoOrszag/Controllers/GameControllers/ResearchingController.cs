@@ -26,9 +26,18 @@ namespace EnCoOrszag.Controllers.GameControllers
         public ActionResult CurrentResearching()
         {
             Manager manager = new Manager();
-            if (TempData["Cancel"] != null)
-                ViewBag.Message = TempData["Cancel"].ToString();
-            return View("Researching", manager.makeResearchingViewModel());
+            bool logedin = manager.isLogedIn();
+            if (logedin)
+            {
+                if (TempData["Cancel"] != null)
+                    ViewBag.Message = TempData["Cancel"].ToString();
+                return View("Researching", manager.makeResearchingViewModel());
+            }
+            else
+            {
+                ViewBag.Message = "Please register a new user.";
+                return RedirectToAction("Login", "Account");
+            }
         }
 
         public ActionResult CancelResearch(ResearchingViewModel vmR)

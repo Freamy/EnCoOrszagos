@@ -8,6 +8,11 @@
             padding: 10px;
             align-items: center;
             align-content: center;
+            
+        }
+
+        th{
+            text-align: center;
         }
     </style>
 </head>
@@ -19,7 +24,7 @@
 
 <h2>ArmyRecruit</h2>
 
-@ViewBag.Message
+<h4>@ViewBag.Message</h4>
 
 <table>
 
@@ -31,7 +36,8 @@
         <th>Recruit cost</th>
         <th>Upkeep</th>
         <th>Pay</th>
-        <th>In your service</th>
+        <th>In your service<br />(@Model.AllSpace / @Model.OccupiedSpace)
+        </th>
     </tr>
     @foreach (var item in Model.Types)
     {
@@ -54,6 +60,7 @@
         </tr>
         }
     }
+
 
 
 </table>

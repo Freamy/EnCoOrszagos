@@ -21,15 +21,24 @@ namespace EnCoOrszag.Controllers.GameControllers
         public ActionResult CurrentConstructions()
         {
             Manager manager = new Manager();
-            if (TempData["Cancelled"] != null)
-                ViewBag.Message = TempData["Cancelled"].ToString();
-            return View("CurrentConstruction", manager.makeConstructionViewModel());
+            bool logedin = manager.isLogedIn();
+            if (logedin) {
+                if (TempData["Cancelled"] != null) 
+                    ViewBag.Message = TempData["Cancelled"].ToString();
+                return View("CurrentConstruction", manager.makeConstructionViewModel());
+            }
+            else
+            {
+                ViewBag.Message = "Please register a new user.";
+                return RedirectToAction("Login", "Account");
+            }
         }
 
         [HttpPost]
         public ActionResult CancelConstruction(string Cancel, ConstructionViewModel vmC)
         {
             Manager manager = new Manager();
+            
             manager.cancelConstruction(vmC.Id);
             ModelState.Clear();
             TempData["Cancelled"] = "Construction cancelled.";

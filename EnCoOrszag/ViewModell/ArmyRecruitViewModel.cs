@@ -11,6 +11,9 @@ namespace EnCoOrszag.ViewModell
         public int Gold { get; set; }
         public List<UnitTypeViewModel> Types { get; set; }
 
+        public int AllSpace { get; set; }
+        public int OccupiedSpace { get; set; }
+
         public int hAmount { get; set; }
 
         public int Id { get; set; }
