@@ -1,31 +1,40 @@
-﻿<head>
-    <style>
-        table, th, td {
-            border: 1px solid black;
-        }
-
-        th, td {
-            padding: 10px;
-            align-items: center;
-            align-content: center;
-        }
-    </style>
-</head>
-
+﻿@using Newtonsoft.Json
 @model EnCoOrszag.ViewModell.AssaultViewModel
+<html ng-app="AssaultApp">
+    <head>
+        <style>
+            table, th, td {
+                border: 1px solid black;
+            }
 
-@{
-    ViewBag.Title = "Assault";
-}
+            th, td {
+                padding: 10px;
+                align-items: center;
+                align-content: center;
+            }
+        </style>
+        <script type="text/javascript" src="~/Scripts/angular.min.js"></script>
+        <script type="text/javascript" src="~/Scripts/GameScripts/Assault.js"></script>
+    </head>
+    <body>
+        
 
-<h2>Assault</h2>
+        @{
+            ViewBag.Title = "Assault";
+        }
+        <h2>Assault</h2>
+      var thing =  @Html.Raw(@JsonConvert.SerializeObject(@Model.Armies))
+        <div ng-controller="ArmyStoreController as ASC">
+            
+        </div>
+        
+        <div ng-controller="TestController as test">
+            {{test.setData(12)}}
+            {{test.dmg}}
+            {{test.minus(3)}}<br />
+            {{test.dmg}}
+        </div>
+    </body>
 
-<table>
-    <tr>
-        <th>Name</th>
-        <th>Description</th>
-        <th>Amount</th>
-        <th>Attack power</th>
-        <th>Defensive power</th>
-    </tr>  
-</table>
+
+</html>
