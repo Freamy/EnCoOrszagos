@@ -1,5 +1,4 @@
-﻿@using Newtonsoft.Json
-@model EnCoOrszag.ViewModell.AssaultViewModel
+﻿@model EnCoOrszag.ViewModell.AssaultViewModel
 <html ng-app="AssaultApp">
     <head>
         <style>
@@ -23,18 +22,55 @@
             ViewBag.Title = "Assault";
         }
         <h2>Assault</h2>
-      var thing =  @Html.Raw(@JsonConvert.SerializeObject(@Model.Armies))
-        <div ng-controller="ArmyStoreController as ASC">
-            
+        <div ng-controller="ArmyController as AC">
+            <h3>Your forces in the country.</h3>
+            <table>
+                <tr ng-repeat="unit in AC.armyStore">
+                    <td>{{unit["Type"]["Name"]}}</td>
+                    <td>{{unit["Size"]}}</td>
+                    <td>{{unit}}</td> <!-- Test -->
+                </tr>
+            </table>
+            <br />
         </div>
         
-        <div ng-controller="TestController as test">
-            {{test.setData(12)}}
-            {{test.dmg}}
-            {{test.minus(3)}}<br />
-            {{test.dmg}}
+
+
+        <div name="Test" ng-controller="Test as t">
+            <!-- Read about how async ajax works!-->
+           @using (Html.BeginForm("", "", FormMethod.Post)) 
+           {
+                  <input ng-model="archer"/>
+    
+               
+                <input type="submit" ng-disabled=t.canSend() value="Assault"/>
+           }
+        </div>
+
+
+
+        <div ng-controller="AssaultController as AC">
+            <h3>Your current assaults.</h3>
+            <table>
+                <tr>
+                    <th>Target</th>
+                    <th colspan="3">Force</th>
+                </tr>
+                <tr ng-repeat="assault in AC.assaultStore">
+                    <td>{{assault["Country"]["Name"]}}</td>
+                    <td ng-repeat="force in assault.Forces">
+                        {{force["Type"]["Name"]}}: {{force["Size"]}} 
+                    </td>
+                </tr>
+            </table>
         </div>
     </body>
 
 
 </html>
+
+<script>
+    var armyModel = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Armies));
+    var countries = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Countries));
+    var assaults = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Assaults));
+</script>

@@ -9,7 +9,8 @@ namespace EnCoOrszag.ViewModell
 {
     public class AssaultsCollectModel
     {
-        public virtual ICollection<Assault> Assault { get; set; }
-        public virtual ICollection<Force> Forces { get; set; }
+        public Country Country { get; set; }
+        public ICollection<Force> Forces { get; set; }
+        
     }
 }

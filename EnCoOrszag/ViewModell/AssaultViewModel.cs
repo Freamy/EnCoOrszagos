@@ -12,6 +12,6 @@ namespace EnCoOrszag.ViewModell
         public virtual ICollection<Country> Countries { get; set; }
         public virtual ICollection<Army> Armies { get; set; }
 
-        public virtual AssaultsCollectModel Assaults { get; set; }
+        public virtual ICollection<AssaultsCollectModel> Assaults { get; set; }
     }
 }

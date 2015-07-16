@@ -10,6 +10,14 @@ using EnCoOrszag.ViewModell;
 
 namespace EnCoOrszag.Models.DataAccess
 {
+
+    //TODO: Only one manager (Static functions), Only one context at the same time (Singleton).
+    //TODO: FakeGlobal variables deleted.
+    //TODO: C# caseing: public functions starts with capital letters.
+    //TODO: Brackets are at new line not at the end of previous
+    //TODO: Inicializalas: Select (b => new object ...) OR object { ... }
+    //TODO: foreach -> break : Should be a FirstOrDefault
+    //TODO: shouldn't break lambda exrepssions, break line before the . (dot)
     public class Manager
     {
         public readonly int MAX_PARALLEL_CONSTRUCTIONS = 4;
@@ -184,10 +192,10 @@ namespace EnCoOrszag.Models.DataAccess
                 context.Researching.RemoveRange(context.Researching.Where(m => m.Country == null));
 
                 countries = battle(countries);
-                countries = armiesReturnHome(countries);
+             //   countries = armiesReturnHome(countries);
 
-                context.Assaults.RemoveRange(context.Assaults);
-                context.Forces.RemoveRange(context.Forces);
+              //  context.Assaults.RemoveRange(context.Assaults);
+             //   context.Forces.RemoveRange(context.Forces);
 
                 countries = calculateHighScore(countries);
 
@@ -621,7 +629,16 @@ namespace EnCoOrszag.Models.DataAccess
                 int activeCountryId = context.Users.First(c => c.UserName == System.Web.HttpContext.Current.User.Identity.Name).Country.Id;
                 AssaultViewModel vmAssault = new AssaultViewModel();
 
-                vmAssault.Countries = context.Countries.ToList<Country>();
+                List<Country> countries = new List<Country>() ;
+                foreach (var item in context.Countries.ToList<Country>())
+                {
+                    Country c = new Country();
+                    c.Id = item.Id;
+                    c.Name = item.Name;
+                    countries.Add(c);
+                }
+
+                vmAssault.Countries = countries;
 
                 Country country = context.Countries.First(m => m.Id == activeCountryId);
 
@@ -644,9 +661,36 @@ namespace EnCoOrszag.Models.DataAccess
                // vmAssault.Armies = country.StandingForce.ToList<Army>();
                 vmAssault.Armies = armies;
 
-                AssaultsCollectModel cmAssault = new AssaultsCollectModel();
+                List<AssaultsCollectModel> cmAssault = new List<AssaultsCollectModel>();
 
+                foreach (var item in country.Assaults.ToList<Assault>())
+                {
+                    AssaultsCollectModel assault = new AssaultsCollectModel();
+                    
+                    Country c = new Country();
+                    c.Id = item.Target.Id;
+                    c.Name = item.Target.Name;
 
+                    assault.Country = c;
+
+                    List<Force> newForces = new List<Force>();
+
+                    foreach (var f in item.Forces.ToList<Force>())
+                    {
+                        Force newForce = new Force();
+                        newForce.Size = f.Size;
+                        UnitType newType = new UnitType();
+                        newType.Id = f.Type.Id;
+                        newType.Name = f.Type.Name;
+                        newForce.Type = newType;
+                        newForces.Add(newForce);
+                    }
+
+                    assault.Forces = newForces;
+                    cmAssault.Add(assault);
+                }
+
+                vmAssault.Assaults = cmAssault;
                 return vmAssault;
             }
         }
