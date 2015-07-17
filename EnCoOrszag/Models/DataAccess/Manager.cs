@@ -16,6 +16,8 @@ namespace EnCoOrszag.Models.DataAccess
     //TODO: Only one manager (Static functions), Only one context at the same time (Singleton).
     //TODO: C# caseing: public functions starts with capital letters.
     //TODO: Inicializalas: Select (b => new object ...) OR object { ... } instead of foreach everywhere.
+
+    //TODO: Build assault function is a mess.
     public class Manager
     {
         public readonly int MAX_PARALLEL_CONSTRUCTIONS = 4;
@@ -48,7 +50,10 @@ namespace EnCoOrszag.Models.DataAccess
                     vmTemp.Cost = item.Cost;
                     vmTemp.Description = item.Description;
                     vmTemp.Repeatable = item.Repeatable;
-                    vmTemp.NoOfFinishedBlueprints = context.Buildings.First(m => m.Blueprint.Name == item.Name).NumberOfBuildings;
+                    if (context.Buildings.FirstOrDefault(m => m.Blueprint.Name == item.Name) != null)
+                        vmTemp.NoOfFinishedBlueprints = context.Buildings.First(m => m.Blueprint.Name == item.Name).NumberOfBuildings;
+                    else
+                        vmTemp.NoOfFinishedBlueprints = 0;
 
                     /*foreach (var building in buildingList)
                     {

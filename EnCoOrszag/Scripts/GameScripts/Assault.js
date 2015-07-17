@@ -43,7 +43,10 @@
             }
            // var res = $http.post('/Assault/SendAssault', { data: send });
             $http.post('/Assault/SendAssault', send, config).then(function (result) {
-                $scope.assaults.push();
+             
+                $window.assaults.push(
+                    
+                );
             });
             
            
