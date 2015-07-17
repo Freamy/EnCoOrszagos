@@ -11,19 +11,17 @@ using EnCoOrszag.ViewModell;
 namespace EnCoOrszag.Models.DataAccess
 {
 
+    //TODO: FakeGlobal variable delete.
+
     //TODO: Only one manager (Static functions), Only one context at the same time (Singleton).
-    //TODO: FakeGlobal variables deleted.
     //TODO: C# caseing: public functions starts with capital letters.
-    //TODO: Brackets are at new line not at the end of previous
-    //TODO: Inicializalas: Select (b => new object ...) OR object { ... }
-    //TODO: foreach -> break : Should be a FirstOrDefault
-    //TODO: shouldn't break lambda exrepssions, break line before the . (dot)
+    //TODO: Inicializalas: Select (b => new object ...) OR object { ... } instead of foreach everywhere.
     public class Manager
     {
         public readonly int MAX_PARALLEL_CONSTRUCTIONS = 4;
         public readonly int MAX_PARALLEL_RESEARCHES = 3;
 
-        public bool isLogedIn()
+        public bool IsLogedIn()
         {
             if (System.Web.HttpContext.Current.User.Identity.IsAuthenticated)
             {
@@ -32,7 +30,7 @@ namespace EnCoOrszag.Models.DataAccess
             return false;
         }
 
-        public List<BuildingViewModel> makeBuildingViewModel()
+        public List<BuildingViewModel> MakeBuildingViewModel()
         {
             using (var context = new ApplicationDbContext())
             {
@@ -50,13 +48,16 @@ namespace EnCoOrszag.Models.DataAccess
                     vmTemp.Cost = item.Cost;
                     vmTemp.Description = item.Description;
                     vmTemp.Repeatable = item.Repeatable;
-                    foreach (var building in buildingList)
+                    vmTemp.NoOfFinishedBlueprints = context.Buildings.First(m => m.Blueprint.Name == item.Name).NumberOfBuildings;
+
+                    /*foreach (var building in buildingList)
                     {
+                        
                         if(building.Blueprint == item){
                             vmTemp.NoOfFinishedBlueprints = building.NumberOfBuildings;
                             break;
                         }
-                    }
+                    }*/
                     
                     vmBls.Add(vmTemp);
                 }
@@ -65,7 +66,7 @@ namespace EnCoOrszag.Models.DataAccess
             }
         }
         
-        public List<ResearchViewModel> makeResearchViewModel()
+        public List<ResearchViewModel> MakeResearchViewModel()
         {
             using (var context = new ApplicationDbContext())
             {
@@ -83,8 +84,8 @@ namespace EnCoOrszag.Models.DataAccess
                     if (context.Researches.Count() > 0)
                     {
                          if(context.Researches.Where(
-                            m => m.Country.Id == activeCountryId
-                            ).FirstOrDefault(c => c.Technology.Id == tech.Id) != null)
+                            m => m.Country.Id == activeCountryId)
+                            .FirstOrDefault(c => c.Technology.Id == tech.Id) != null)
                          {
                              temp.Researched = true;
                          }
@@ -105,7 +106,7 @@ namespace EnCoOrszag.Models.DataAccess
         }
         
 
-        public Country getNewCountry(RegisterViewModel model)
+        public Country GetNewCountry(RegisterViewModel model)
         {
             using (var context = new ApplicationDbContext())
             {
@@ -119,22 +120,20 @@ namespace EnCoOrszag.Models.DataAccess
         }
         
 
-        public bool startConstruction(string buildingName)
+        public bool StartConstruction(string buildingName)
         {
             using (var context = new ApplicationDbContext())
             {
                 int activeCountryId = context.Users.First(c => c.UserName == System.Web.HttpContext.Current.User.Identity.Name).Country.Id;
 
-                bool canConstruct = context.Constructions.Count(
-                    m => m.Country.Id == activeCountryId) < MAX_PARALLEL_CONSTRUCTIONS;
+                bool canConstruct = context.Constructions.Count(m => m.Country.Id == activeCountryId) < MAX_PARALLEL_CONSTRUCTIONS;
 
                 if (canConstruct)
                 {
                     Construction buildingStarted = new Construction();
                     buildingStarted.Blueprint = context.Blueprints.First(m => m.Name == buildingName);
 
-                    buildingStarted.Country = context.Countries.First(
-                        m => m.Id == activeCountryId);
+                    buildingStarted.Country = context.Countries.First(m => m.Id == activeCountryId);
 
                     buildingStarted.FinishTurn = context.Game.First(m => m.Id == 1).Turn + buildingStarted.Blueprint.BuildTime;
                     context.Constructions.Add(buildingStarted);
@@ -145,16 +144,15 @@ namespace EnCoOrszag.Models.DataAccess
             }
         }
 
-        public string startResearch(string researchName)
+        public string StartResearch(string researchName)
         {
             using (var context = new ApplicationDbContext()) { 
                 int activeCountryId = context.Users.First(c => c.UserName == System.Web.HttpContext.Current.User.Identity.Name).Country.Id;
 
-                bool canResearch = context.Researching.Count(
-                    m => m.Country.Id == activeCountryId) < MAX_PARALLEL_RESEARCHES;
+                bool canResearch = context.Researching.Count(m => m.Country.Id == activeCountryId) < MAX_PARALLEL_RESEARCHES;
 
-                bool doingResearch = context.Researching.Where(
-                    m => m.Country.Id == activeCountryId).Count(k => k.Technology.Name == researchName) < 1;
+                bool doingResearch = context.Researching.Where(m => m.Country.Id == activeCountryId)
+                    .Count(k => k.Technology.Name == researchName) < 1;
 
 
                 if (canResearch && doingResearch)
@@ -177,27 +175,27 @@ namespace EnCoOrszag.Models.DataAccess
         }
 
 
-        public string endTurn()
+        public string EndTurn()
         {
             using(var context = new ApplicationDbContext()){
                 List<Country> countries = context.Countries.ToList();
                 int turn = context.Game.First(m => m.Id == 1).Turn + 1;
                 context.Game.First(m => m.Id == 1).Turn = turn;
-                countries = payTaxesAndPotato(countries);
-                countries = dealWithArmy(countries);
-                countries = finishResearchs(countries, turn);
-                countries = finishBuildings(countries, turn);
+                countries = PayTaxesAndPotato(countries);
+                countries = DealWithArmy(countries);
+                countries = FinishResearchs(countries, turn);
+                countries = FinishBuildings(countries, turn);
 
                 context.Constructions.RemoveRange(context.Constructions.Where(m => m.Country == null));
                 context.Researching.RemoveRange(context.Researching.Where(m => m.Country == null));
 
-                countries = battle(countries);
+                countries = Battle(countries);
              //   countries = armiesReturnHome(countries);
 
               //  context.Assaults.RemoveRange(context.Assaults);
              //   context.Forces.RemoveRange(context.Forces);
 
-                countries = calculateHighScore(countries);
+                countries = CalculateHighScore(countries);
 
                 context.SaveChanges();
                 return globalFake;
@@ -207,7 +205,7 @@ namespace EnCoOrszag.Models.DataAccess
             //finishResearch();
         }
 
-        public List<Country> calculateHighScore(List<Country> countries)
+        public List<Country> CalculateHighScore(List<Country> countries)
         {
             using (var context = new ApplicationDbContext())
             {
@@ -235,7 +233,7 @@ namespace EnCoOrszag.Models.DataAccess
             }
         }
 
-        public List<Country> armiesReturnHome(List<Country> countries)
+        public List<Country> ArmiesReturnHome(List<Country> countries)
         {
             using (var context = new ApplicationDbContext())
             {
@@ -267,7 +265,7 @@ namespace EnCoOrszag.Models.DataAccess
 
         string globalFake = "";
 
-        public List<Country> battle(List<Country> countries)
+        public List<Country> Battle(List<Country> countries)
         {
             globalFake = "";
             using (var context = new ApplicationDbContext())
@@ -328,7 +326,7 @@ namespace EnCoOrszag.Models.DataAccess
             }
         }
 
-        public List<Country> dealWithArmy(List<Country> countries)
+        public List<Country> DealWithArmy(List<Country> countries)
         {
             using (var context = new ApplicationDbContext())
             {
@@ -359,7 +357,7 @@ namespace EnCoOrszag.Models.DataAccess
             }
         }
 
-        public List<Country> payTaxesAndPotato(List<Country> countries)
+        public List<Country> PayTaxesAndPotato(List<Country> countries)
         {
             foreach (var c in countries)
             {
@@ -389,7 +387,7 @@ namespace EnCoOrszag.Models.DataAccess
             return countries;
         }
 
-        public List<Country> finishResearchs(List<Country> countries, int turn)
+        public List<Country> FinishResearchs(List<Country> countries, int turn)
         {
             foreach (var c in countries)
             {
@@ -409,7 +407,7 @@ namespace EnCoOrszag.Models.DataAccess
             return countries;
         }
 
-        public List<Country> finishBuildings(List<Country> countries, int turn)
+        public List<Country> FinishBuildings(List<Country> countries, int turn)
         {
             foreach (var c in countries)
             {
@@ -434,7 +432,7 @@ namespace EnCoOrszag.Models.DataAccess
             return countries;
         }
 
-        public List<ConstructionViewModel> makeConstructionViewModel()
+        public List<ConstructionViewModel> MakeConstructionViewModel()
         {
             using (var context = new ApplicationDbContext())
             {
@@ -458,7 +456,7 @@ namespace EnCoOrszag.Models.DataAccess
             }
         }
 
-        public List<ResearchingViewModel> makeResearchingViewModel()
+        public List<ResearchingViewModel> MakeResearchingViewModel()
         {
             using (var context = new ApplicationDbContext())
             {
@@ -481,7 +479,7 @@ namespace EnCoOrszag.Models.DataAccess
             }
         }
 
-        public CountryViewModel makeCountryViewModel()
+        public CountryViewModel MakeCountryViewModel()
         {
             using (var context = new ApplicationDbContext())
             {
@@ -499,7 +497,7 @@ namespace EnCoOrszag.Models.DataAccess
             }
         }
 
-        public void cancelConstruction(int id)
+        public void CancelConstruction(int id)
         {
             using (var context = new ApplicationDbContext())
             {
@@ -508,7 +506,7 @@ namespace EnCoOrszag.Models.DataAccess
             }
         }
 
-        public void cancelResearch(int id)
+        public void CancelResearch(int id)
         {
             using (var context = new ApplicationDbContext())
             {
@@ -517,7 +515,7 @@ namespace EnCoOrszag.Models.DataAccess
             }
         }
 
-        public List<HighScoreViewModel> makeHighScoreViewModel()
+        public List<HighScoreViewModel> MakeHighScoreViewModel()
         {
             using (var context = new ApplicationDbContext())
             {
@@ -534,9 +532,10 @@ namespace EnCoOrszag.Models.DataAccess
             }
         }
 
-        public ArmyRecruitViewModel makeArmyRecruitViewModel()
+        public ArmyRecruitViewModel MakeArmyRecruitViewModel()
         {
-            using(var context = new ApplicationDbContext()){
+            using(var context = new ApplicationDbContext())
+            {
 
                 int activeCountryId = context.Users.First(c => c.UserName == System.Web.HttpContext.Current.User.Identity.Name).Country.Id;
 
@@ -578,7 +577,7 @@ namespace EnCoOrszag.Models.DataAccess
             }
         }
 
-        public string recruitTroops(int id, int amount)
+        public string RecruitTroops(int id, int amount)
         {
             if (amount > 0)
             {
@@ -594,8 +593,8 @@ namespace EnCoOrszag.Models.DataAccess
                         armySize += item.Size;
                     }
                     int cost = context.UnitTypes.First(m => m.Id == id).Cost;
-                    bool enoughPlace = context.Buildings.Where(m => m.Country.Id == activeCountryId).First(m => m.Blueprint.Name == "Barrack").NumberOfBuildings*200 >=
-                       (armySize + amount);
+                    bool enoughPlace = context.Buildings.Where(m => m.Country.Id == activeCountryId)
+                        .First(m => m.Blueprint.Name == "Barrack").NumberOfBuildings*200 >= (armySize + amount);
 
                     if (country.Gold >= cost * amount && enoughPlace)
                     {
@@ -622,7 +621,7 @@ namespace EnCoOrszag.Models.DataAccess
             return "You can't recruit this many troops, make sure you have enough gold and/or living quarters.";
         }
 
-        public AssaultViewModel makeAssaultViewModel()
+        public AssaultViewModel MakeAssaultViewModel()
         {
             using (var context = new ApplicationDbContext())
             {

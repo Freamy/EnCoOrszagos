@@ -15,20 +15,20 @@ namespace EnCoOrszag.Controllers.GameControllers
         // GET: ArmyRecruit
         public ActionResult Index()
         {
-            return View(new Manager().makeArmyRecruitViewModel());
+            return View(new Manager().MakeArmyRecruitViewModel());
         }
 
         public ActionResult ArmyRecruit()
         {
             Manager manager = new Manager();
-            bool logedin = manager.isLogedIn();
+            bool logedin = manager.IsLogedIn();
             if (logedin)
             {
                 if (TempData["Message"] != null)
                 {
                     ViewBag.Message = TempData["Message"].ToString();
                 }
-                return View(manager.makeArmyRecruitViewModel());
+                return View(manager.MakeArmyRecruitViewModel());
             }
             else
             {
@@ -40,7 +40,7 @@ namespace EnCoOrszag.Controllers.GameControllers
         public ActionResult Recruit(ArmyRecruitViewModel vmAR)
         {
             ModelState.Clear();
-            string message =  new Manager().recruitTroops(vmAR.Id, vmAR.hAmount);
+            string message =  new Manager().RecruitTroops(vmAR.Id, vmAR.hAmount);
             TempData["Message"] = message;
             return RedirectToAction("ArmyRecruit");
         }

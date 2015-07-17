@@ -19,7 +19,7 @@ namespace EnCoOrszag.Controllers.GameControllers
         public ActionResult Highscore()
         {
             Manager manager = new Manager();
-            return View("Highscore", manager.makeHighScoreViewModel());
+            return View("Highscore", manager.MakeHighScoreViewModel());
         }
     }
 }

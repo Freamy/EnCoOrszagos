@@ -21,11 +21,11 @@ namespace EnCoOrszag.Controllers.GameControllers
         public ActionResult CurrentConstructions()
         {
             Manager manager = new Manager();
-            bool logedin = manager.isLogedIn();
+            bool logedin = manager.IsLogedIn();
             if (logedin) {
                 if (TempData["Cancelled"] != null) 
                     ViewBag.Message = TempData["Cancelled"].ToString();
-                return View("CurrentConstruction", manager.makeConstructionViewModel());
+                return View("CurrentConstruction", manager.MakeConstructionViewModel());
             }
             else
             {
@@ -39,7 +39,7 @@ namespace EnCoOrszag.Controllers.GameControllers
         {
             Manager manager = new Manager();
             
-            manager.cancelConstruction(vmC.Id);
+            manager.CancelConstruction(vmC.Id);
             ModelState.Clear();
             TempData["Cancelled"] = "Construction cancelled.";
             return RedirectToAction("CurrentConstructions", "Construction");

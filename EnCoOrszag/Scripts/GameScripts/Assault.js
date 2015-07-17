@@ -1,8 +1,8 @@
 ﻿(function () {
     var app = angular.module('AssaultApp', []);
-    var armyStore = [];
-    var countryStore = [];
-    var assaultStore = [];
+    var $scope.armyStore = []; //Army
+    var countryStore = []; //Countries
+    var assaultStore = []; //Assaults
 
     app.controller('ArmyController', ['$scope', '$window', function ($scope, $window) {
         
@@ -19,16 +19,25 @@
         this.assaultStore = $window.assaults;
     }]);
 
-    app.controller('Test', ['$scope','$window', function ($scope,$window) {
+    app.controller('SendAssaultController', ['$scope','$window', function ($scope,$window) {
         this.armyStore = $window.armyModel;
+        this.assaultStore = $window.assaults;
         this.canSend = function () {
 
-            var enoughArcher = $scope.archer > 10; //This can't be static.
-           // var enoughKnight = $scope.val > 10;
-            //var enoughElite = $scope.val > 10;
-           
-            return enoughArcher;// || enoughKnight || enoughElite;
+            var enoughArcher = $scope.archer > $window.archerAmount; 
+            var enoughKnight = $scope.knight > $window.knightAmount;
+            var enoughElite = $scope.elite > $window.eliteAmount;
+          
+            return enoughArcher || enoughKnight || enoughElite;
         };
+
+        this.sendArmy = function () {
+            this.assaultStore.push({
+                assault: { Country: { 'Name': "Fream" }, Thing: {'Mas':"Mas"}}
+            });
+            //assault["Country"]["Name"]
+            
+        }
     }]);
 
 })();

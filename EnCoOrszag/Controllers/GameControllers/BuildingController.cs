@@ -23,12 +23,12 @@ namespace EnCoOrszag.Controllers.GameControllers
         {
             Manager manager = new Manager();
 
-            bool logedin = manager.isLogedIn();
+            bool logedin = manager.IsLogedIn();
 
             if (logedin) {
                 if(TempData["Response"] != null)
                     ViewBag.Message = TempData["Response"].ToString();
-                List<BuildingViewModel> vmBuild = manager.makeBuildingViewModel();
+                List<BuildingViewModel> vmBuild = manager.MakeBuildingViewModel();
                 return View("Build", vmBuild);
             }
             else
@@ -45,7 +45,7 @@ namespace EnCoOrszag.Controllers.GameControllers
 
             bool started = false;
 
-            started = manager.startConstruction(submit);
+            started = manager.StartConstruction(submit);
             if (started)
             {
                 TempData["Response"] = "Your construction is started.";

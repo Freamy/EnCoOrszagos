@@ -158,7 +158,7 @@ namespace EnCoOrszag.Controllers
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
 
                 // For country creation
-                Country country = new Manager().getNewCountry(model);
+                Country country = new Manager().GetNewCountry(model);
                 user.Country = country;
 
                 //EXAMPLE

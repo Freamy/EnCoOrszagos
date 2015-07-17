@@ -26,12 +26,12 @@ namespace EnCoOrszag.Controllers.GameControllers
         public ActionResult CurrentResearching()
         {
             Manager manager = new Manager();
-            bool logedin = manager.isLogedIn();
+            bool logedin = manager.IsLogedIn();
             if (logedin)
             {
                 if (TempData["Cancel"] != null)
                     ViewBag.Message = TempData["Cancel"].ToString();
-                return View("Researching", manager.makeResearchingViewModel());
+                return View("Researching", manager.MakeResearchingViewModel());
             }
             else
             {
@@ -43,7 +43,7 @@ namespace EnCoOrszag.Controllers.GameControllers
         public ActionResult CancelResearch(ResearchingViewModel vmR)
         {
             Manager manager = new Manager();
-            manager.cancelResearch(vmR.Id);
+            manager.CancelResearch(vmR.Id);
             TempData["Cancel"] = "Research cancelled.";
             ModelState.Clear();
             return RedirectToAction("CurrentResearching");

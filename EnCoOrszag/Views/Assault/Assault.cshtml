@@ -28,7 +28,6 @@
                 <tr ng-repeat="unit in AC.armyStore">
                     <td>{{unit["Type"]["Name"]}}</td>
                     <td>{{unit["Size"]}}</td>
-                    <td>{{unit}}</td> <!-- Test -->
                 </tr>
             </table>
             <br />
@@ -36,15 +35,12 @@
         
 
 
-        <div name="Test" ng-controller="Test as t">
+        <div name="Test" ng-controller="SendAssaultController as SAC">
             <!-- Read about how async ajax works!-->
-           @using (Html.BeginForm("", "", FormMethod.Post)) 
-           {
-                  <input ng-model="archer"/>
-    
-               
-                <input type="submit" ng-disabled=t.canSend() value="Assault"/>
-           }
+                <input ng-model="archer" type="text" />
+                <input ng-model="knight" type="text" />
+                <input ng-model="elite" type="text" />
+                <button ng-disabled="SAC.canSend()" ng-click="SAC.sendArmy()"> Assault </button>
         </div>
 
 
@@ -73,4 +69,8 @@
     var armyModel = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Armies));
     var countries = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Countries));
     var assaults = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Assaults));
+
+    var archerAmount = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Armies.First(m => m.Type.Name == "Archer").Size));
+    var knightAmount = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Armies.First(m => m.Type.Name == "Knight").Size));
+    var eliteAmount = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Armies.First(m => m.Type.Name == "Elite").Size));
 </script>
