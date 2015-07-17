@@ -16,52 +16,52 @@
         <script type="text/javascript" src="~/Scripts/GameScripts/Assault.js"></script>
     </head>
     <body>
-        
-
         @{
             ViewBag.Title = "Assault";
+            
         }
-        <h2>Assault</h2>
-        <div ng-controller="ArmyController as AC">
+
+        @ViewBag.Message
+
+        <div ng-controller="MainEnCoController as Cont">
+            <!-- Your own forces -->
             <h3>Your forces in the country.</h3>
             <table>
-                <tr ng-repeat="unit in AC.armyStore">
+                <tr ng-repeat="unit in Cont.armyStore">
                     <td>{{unit["Type"]["Name"]}}</td>
                     <td>{{unit["Size"]}}</td>
                 </tr>
             </table>
             <br />
-        </div>
+
+            <input ng-model="archer" type="text" />
+            <input ng-model="knight" type="text" />
+            <input ng-model="elite" type="text" />
+            <button ng-disabled="Cont.canSend()" ng-click="Cont.sendArmy()"> Assault </button>
+
         
+            <br /><br />
+            <label>Target country: </label>
+            <select ng-model="target">
+                <option ng-repeat="country in Cont.countryStore" value={{country["Name"]}}>{{country["Name"]}}</option>
+            </select>
 
-
-        <div name="Test" ng-controller="SendAssaultController as SAC">
-            <!-- Read about how async ajax works!-->
-                <input ng-model="archer" type="text" />
-                <input ng-model="knight" type="text" />
-                <input ng-model="elite" type="text" />
-                <button ng-disabled="SAC.canSend()" ng-click="SAC.sendArmy()"> Assault </button>
-        </div>
-
-
-
-        <div ng-controller="AssaultController as AC">
             <h3>Your current assaults.</h3>
             <table>
                 <tr>
                     <th>Target</th>
                     <th colspan="3">Force</th>
                 </tr>
-                <tr ng-repeat="assault in AC.assaultStore">
+                <tr ng-repeat="assault in Cont.assaultStore">
                     <td>{{assault["Country"]["Name"]}}</td>
                     <td ng-repeat="force in assault.Forces">
-                        {{force["Type"]["Name"]}}: {{force["Size"]}} 
+                        {{force["Type"]["Name"]}}: {{force["Size"]}}
                     </td>
                 </tr>
             </table>
         </div>
-    </body>
 
+    </body>
 
 </html>
 

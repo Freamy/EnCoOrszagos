@@ -190,10 +190,10 @@ namespace EnCoOrszag.Models.DataAccess
                 context.Researching.RemoveRange(context.Researching.Where(m => m.Country == null));
 
                 countries = Battle(countries);
-             //   countries = armiesReturnHome(countries);
+                countries = ArmiesReturnHome(countries);
 
-              //  context.Assaults.RemoveRange(context.Assaults);
-             //   context.Forces.RemoveRange(context.Forces);
+                context.Assaults.RemoveRange(context.Assaults);
+                context.Forces.RemoveRange(context.Forces);
 
                 countries = CalculateHighScore(countries);
 
@@ -245,7 +245,7 @@ namespace EnCoOrszag.Models.DataAccess
                         {
                             if (c.StandingForce.FirstOrDefault(m => m.Type.Id == f.Type.Id) != null)
                             {
-                                c.StandingForce.FirstOrDefault(m => m.Type.Id == f.Type.Id).Size += f.Size;
+                                c.StandingForce.First(m => m.Type.Id == f.Type.Id).Size += f.Size;
                             }
                             else
                             {
@@ -631,10 +631,12 @@ namespace EnCoOrszag.Models.DataAccess
                 List<Country> countries = new List<Country>() ;
                 foreach (var item in context.Countries.ToList<Country>())
                 {
-                    Country c = new Country();
-                    c.Id = item.Id;
-                    c.Name = item.Name;
-                    countries.Add(c);
+                    if (item.Id != activeCountryId) { 
+                        Country c = new Country();
+                        c.Id = item.Id;
+                        c.Name = item.Name;
+                        countries.Add(c);
+                    }
                 }
 
                 vmAssault.Countries = countries;
@@ -691,6 +693,76 @@ namespace EnCoOrszag.Models.DataAccess
 
                 vmAssault.Assaults = cmAssault;
                 return vmAssault;
+            }
+        }
+
+        public void BuildAssault(string name, int[] forces)
+        {
+            using (var context = new ApplicationDbContext())
+            {
+                Country c = context.Countries.FirstOrDefault(m => m.Name == name);
+                int activeCountryId = context.Users.First(m => m.UserName == System.Web.HttpContext.Current.User.Identity.Name).Country.Id;
+                if (c != null)
+                {
+                    Country origin = context.Countries.FirstOrDefault(m => m.Id == activeCountryId);
+
+                    Force archers = new Force();
+                    archers.Size = forces[0];
+
+                    UnitType ut = context.UnitTypes.First(m => m.Name == "Archer");
+
+                    /*ut.Id = context.UnitTypes.First(m => m.Name == "Archer").Id;
+                    ut.Upkeep = context.UnitTypes.First(m => m.Name == "Archer").Upkeep;
+                    ut.Name = context.UnitTypes.First(m => m.Name == "Archer").Name;
+                    ut.Attack = context.UnitTypes.First(m => m.Name == "Archer").Attack;
+                    ut.Defense = context.UnitTypes.First(m => m.Name == "Archer").Defense;
+                    ut.Description = context.UnitTypes.First(m => m.Name == "Archer").Description;
+                    ut.Cost = context.UnitTypes.First(m => m.Name == "Archer").Cost;
+                    ut.Payment = context.UnitTypes.First(m => m.Name == "Archer").Payment;
+                    ut.Score = context.UnitTypes.First(m => m.Name == "Archer").Score;*/
+
+                    archers.Type = ut;
+
+
+                    origin.StandingForce.First(m => m.Type.Name == "Archer").Size = origin.StandingForce.First(m => m.Type.Name == "Archer").Size - forces[0];
+
+                    List<Force> forcesList = new List<Force>();
+
+                    
+
+                    forcesList.Add(archers);
+
+                    Force knights = new Force();
+                    knights.Size = forces[1];
+                    UnitType ut2 = context.UnitTypes.First(m => m.Name == "Knight");
+
+
+                    knights.Type = ut2;
+
+                    origin.StandingForce.First(m => m.Type.Name == "Knight").Size = origin.StandingForce.First(m => m.Type.Name == "Knight").Size - forces[1];
+
+                    forcesList.Add(knights);
+
+                    Force Elites = new Force();
+                    Elites.Size = forces[2];
+                    UnitType ut3 = context.UnitTypes.First(m => m.Name == "Elite");
+
+                    Elites.Type = ut3;
+
+                    origin.StandingForce.First(m => m.Type.Name == "Elite").Size = origin.StandingForce.First(m => m.Type.Name == "Elite").Size - forces[2];
+
+                    forcesList.Add(Elites);
+
+                    Assault assault = new Assault();
+                    assault.Forces = forcesList;
+                    assault.Target = c;
+
+                    origin.Assaults.Add(assault);
+
+                    context.Assaults.Add(assault);
+                    context.SaveChanges();
+                }
+                
             }
         }
     }
