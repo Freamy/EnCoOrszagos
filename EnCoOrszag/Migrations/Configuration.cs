@@ -17,6 +17,7 @@ namespace EnCoOrszag.Migrations
         protected override void Seed(EnCoOrszag.Models.DataAccess.ApplicationDbContext context)
         {
             context.Blueprints.AddOrUpdate(
+                m => m.Name,
                 new Blueprints
                 {
                     BuildTime = 5,
@@ -38,6 +39,7 @@ namespace EnCoOrszag.Migrations
                 );
 
             context.UnitTypes.AddOrUpdate(
+                m => m.Name,
                 new UnitType
                 {
                     Name = "Archer",
@@ -73,7 +75,16 @@ namespace EnCoOrszag.Migrations
                 }
             );
 
+            context.Game.AddOrUpdate(
+                m => m.Turn,
+                new Game
+                {
+                    Turn = 0
+                }
+             );
+
             context.Technologies.AddOrUpdate(
+                m => m.Name,
                 new Technology
                 {
                     Name = "Tractor",
@@ -129,6 +140,8 @@ namespace EnCoOrszag.Migrations
                     Score = 100
                 }
                 );
+
+            
             //  This method will be called after migrating to the latest version.
 
             //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
