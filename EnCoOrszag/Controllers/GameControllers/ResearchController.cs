@@ -20,9 +20,7 @@ namespace EnCoOrszag.Controllers.GameControllers
 
         public ActionResult Research()
         {
-            Manager manager = new Manager();
-
-            bool logedin = manager.IsLogedIn();
+            bool logedin = Manager.IsLogedIn();
 
             if (logedin)
             {
@@ -30,7 +28,7 @@ namespace EnCoOrszag.Controllers.GameControllers
                 if (TempData["Response"] != null)
                     ViewBag.Message = TempData["Response"].ToString();
 
-                List<ResearchViewModel> vmResearch = manager.MakeResearchViewModel();
+                List<ResearchViewModel> vmResearch = Manager.MakeResearchViewModel();
                 return View(vmResearch);
             }
             else
@@ -44,17 +42,9 @@ namespace EnCoOrszag.Controllers.GameControllers
         {
             Manager manager = new Manager();
 
-            TempData["Response"] = manager.StartResearch(submit);
+            TempData["Response"] = Manager.StartResearch(submit);
 
             return RedirectToAction("Research");
-        }
-
-        public ActionResult CheatResearch()
-        {
-            Manager manager = new Manager();
-            //manager.finishResearch();
-            return RedirectToAction("Research");
-
         }
 
 	}

@@ -23,9 +23,8 @@ namespace EnCoOrszag.Controllers.GameControllers
 
         public ActionResult Assault()
         {
-            Manager manager = new Manager();
-            if (manager.IsLogedIn()) {
-                AssaultViewModel vmA = manager.MakeAssaultViewModel();
+            if (Manager.IsLogedIn()) {
+                AssaultViewModel vmA = Manager.MakeAssaultViewModel();
                 return View(vmA);
             }
             else
@@ -42,12 +41,9 @@ namespace EnCoOrszag.Controllers.GameControllers
             
             AssaultData data = new JavaScriptSerializer().Deserialize<AssaultData>(Request.Form.Get(0));
             
-
-            
-            Manager manager = new Manager();
             string name = data.Name;
             int[] warriors = { int.Parse(data.Archers), int.Parse(data.Knights), int.Parse(data.Elites) };
-            manager.BuildAssault(name, warriors);
+            Manager.BuildAssault(name, warriors);
             return RedirectToAction("Assault");
            // return new HttpStatusCodeResult(HttpStatusCode.OK, "Attack Sent");
         }

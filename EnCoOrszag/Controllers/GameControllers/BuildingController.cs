@@ -21,14 +21,12 @@ namespace EnCoOrszag.Controllers.GameControllers
 
         public ActionResult Building()
         {
-            Manager manager = new Manager();
-
-            bool logedin = manager.IsLogedIn();
+            bool logedin = Manager.IsLogedIn();
 
             if (logedin) {
                 if(TempData["Response"] != null)
                     ViewBag.Message = TempData["Response"].ToString();
-                List<BuildingViewModel> vmBuild = manager.MakeBuildingViewModel();
+                List<BuildingViewModel> vmBuild = Manager.MakeBuildingViewModel();
                 return View("Build", vmBuild);
             }
             else
@@ -45,7 +43,7 @@ namespace EnCoOrszag.Controllers.GameControllers
 
             bool started = false;
 
-            started = manager.StartConstruction(submit);
+            started = Manager.StartConstruction(submit);
             if (started)
             {
                 TempData["Response"] = "Your construction is started.";
@@ -53,14 +51,8 @@ namespace EnCoOrszag.Controllers.GameControllers
             }
             else
             {
-                TempData["Response"] = "You can't make more than " + manager.MAX_PARALLEL_CONSTRUCTIONS + " buildings.";
+                TempData["Response"] = "You can't make more than " + Manager.MAX_PARALLEL_CONSTRUCTIONS + " buildings.";
             }
-            return RedirectToAction("Building");
-        }
-
-        public ActionResult CheatBuilding()
-        {
-            Manager manager = new Manager();
             return RedirectToAction("Building");
         }
 	}

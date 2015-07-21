@@ -25,12 +25,10 @@ namespace EnCoOrszag.Controllers.Entities
         //Main country screen
         public ActionResult Country()
         {
-            Manager manager = new Manager();
-            bool logedin = manager.IsLogedIn();
+            bool logedin = Manager.IsLogedIn();
 
             if (logedin) {
-                if (TempData["Message"] != null) ViewBag.Message = TempData["Message"].ToString();
-                return View(manager.MakeCountryViewModel());
+                return View(Manager.MakeCountryViewModel());
             }
             else
             {
@@ -40,8 +38,7 @@ namespace EnCoOrszag.Controllers.Entities
 
         public ActionResult EndTurn()
         {
-            Manager manager = new Manager();
-            TempData["Message"] = manager.EndTurn();
+            Manager.EndTurn();
             RedirectToAction("country");
             return RedirectToAction("Country");
         }

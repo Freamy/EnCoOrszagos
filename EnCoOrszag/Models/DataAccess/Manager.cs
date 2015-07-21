@@ -10,20 +10,20 @@ using EnCoOrszag.ViewModell;
 
 namespace EnCoOrszag.Models.DataAccess
 {
+    
 
-    //TODO: FakeGlobal variable delete.
-
-    //TODO: Only one manager (Static functions), Only one context at the same time (Singleton).
-    //TODO: C# caseing: public functions starts with capital letters.
+    //TODO:  Only one context at the same time.
     //TODO: Inicializalas: Select (b => new object ...) OR object { ... } instead of foreach everywhere.
 
     //TODO: Build assault function is a mess.
+
     public class Manager
     {
-        public readonly int MAX_PARALLEL_CONSTRUCTIONS = 4;
-        public readonly int MAX_PARALLEL_RESEARCHES = 3;
+        public static readonly int MAX_PARALLEL_CONSTRUCTIONS = 4;
+        public static readonly int MAX_PARALLEL_RESEARCHES = 3;
 
-        public bool IsLogedIn()
+
+        public static bool IsLogedIn()
         {
             if (System.Web.HttpContext.Current.User.Identity.IsAuthenticated)
             {
@@ -32,7 +32,7 @@ namespace EnCoOrszag.Models.DataAccess
             return false;
         }
 
-        public List<BuildingViewModel> MakeBuildingViewModel()
+        public static List<BuildingViewModel> MakeBuildingViewModel()
         {
             using (var context = new ApplicationDbContext())
             {
@@ -42,36 +42,32 @@ namespace EnCoOrszag.Models.DataAccess
 
                 List<BuildingViewModel> vmBls = new List<BuildingViewModel>();
 
+            
+
+
                 foreach (var item in bls)
                 {
-                    BuildingViewModel vmTemp = new BuildingViewModel();
-                    vmTemp.Name = item.Name;
-                    vmTemp.BuildTime = item.BuildTime;
-                    vmTemp.Cost = item.Cost;
-                    vmTemp.Description = item.Description;
-                    vmTemp.Repeatable = item.Repeatable;
+                    BuildingViewModel vmTemp = new BuildingViewModel()
+                    {
+                        BuildTime = item.BuildTime,
+                        Name = item.Name,
+                        Cost = item.Cost,
+                        Description = item.Description,
+                        Repeatable = item.Repeatable,
+                    };
+                   
                     if (context.Buildings.FirstOrDefault(m => m.Blueprint.Name == item.Name) != null)
                         vmTemp.NoOfFinishedBlueprints = context.Buildings.First(m => m.Blueprint.Name == item.Name).NumberOfBuildings;
                     else
-                        vmTemp.NoOfFinishedBlueprints = 0;
-
-                    /*foreach (var building in buildingList)
-                    {
-                        
-                        if(building.Blueprint == item){
-                            vmTemp.NoOfFinishedBlueprints = building.NumberOfBuildings;
-                            break;
-                        }
-                    }*/
-                    
+                        vmTemp.NoOfFinishedBlueprints = 0;                    
                     vmBls.Add(vmTemp);
                 }
 
                 return vmBls;
             }
         }
-        
-        public List<ResearchViewModel> MakeResearchViewModel()
+
+        public static List<ResearchViewModel> MakeResearchViewModel()
         {
             using (var context = new ApplicationDbContext())
             {
@@ -82,9 +78,11 @@ namespace EnCoOrszag.Models.DataAccess
                 int activeCountryId = context.Users.First(c => c.UserName == System.Web.HttpContext.Current.User.Identity.Name).Country.Id;
                 foreach (var tech in techList)
                 {
-                    ResearchViewModel temp = new ResearchViewModel();
-                    temp.Name = tech.Name;
-                    temp.Description = tech.Description;
+                    ResearchViewModel temp = new ResearchViewModel()
+                    {
+                        Name = tech.Name,
+                        Description = tech.Description,
+                    };
 
                     if (context.Researches.Count() > 0)
                     {
@@ -109,23 +107,25 @@ namespace EnCoOrszag.Models.DataAccess
                 return vmResearch;
             }
         }
-        
 
-        public Country GetNewCountry(RegisterViewModel model)
+
+        public static Country GetNewCountry(RegisterViewModel model)
         {
             using (var context = new ApplicationDbContext())
             {
-                Country country = new Country();
-                country.Gold = 1000;
-                country.Potato = 1000;
-                country.Name = model.CountryName;
+                Country country = new Country()
+                {
+                    Gold = 1000,
+                    Potato = 1000,
+                    Name = model.CountryName
+                };
                 context.Countries.Add(country);
                 return country;
             }
         }
-        
 
-        public bool StartConstruction(string buildingName)
+
+        public static bool StartConstruction(string buildingName)
         {
             using (var context = new ApplicationDbContext())
             {
@@ -135,12 +135,12 @@ namespace EnCoOrszag.Models.DataAccess
 
                 if (canConstruct)
                 {
-                    Construction buildingStarted = new Construction();
-                    buildingStarted.Blueprint = context.Blueprints.First(m => m.Name == buildingName);
-
-                    buildingStarted.Country = context.Countries.First(m => m.Id == activeCountryId);
-
-                    buildingStarted.FinishTurn = context.Game.First(m => m.Id == 1).Turn + buildingStarted.Blueprint.BuildTime;
+                    Construction buildingStarted = new Construction()
+                    {
+                        Blueprint = context.Blueprints.First(m => m.Name == buildingName),
+                        Country = context.Countries.First(m => m.Id == activeCountryId),
+                        FinishTurn = context.Game.First(m => m.Id == 1).Turn + context.Blueprints.First(m => m.Name == buildingName).BuildTime
+                    };
                     context.Constructions.Add(buildingStarted);
                     context.SaveChanges();
                     return true;
@@ -149,7 +149,7 @@ namespace EnCoOrszag.Models.DataAccess
             }
         }
 
-        public string StartResearch(string researchName)
+        public static string StartResearch(string researchName)
         {
             using (var context = new ApplicationDbContext()) { 
                 int activeCountryId = context.Users.First(c => c.UserName == System.Web.HttpContext.Current.User.Identity.Name).Country.Id;
@@ -162,14 +162,14 @@ namespace EnCoOrszag.Models.DataAccess
 
                 if (canResearch && doingResearch)
                 {
-                    Researching researchStarted = new Researching();
-                    researchStarted.Technology = context.Technologies.First(m => m.Name == researchName);
+                    Researching researchStarted = new Researching()
+                    {
+                        Technology = context.Technologies.First(m => m.Name == researchName),
+                        Country = context.Countries.First(m => m.Id == activeCountryId),
+                        FinishTurn = context.Game.First(m => m.Id == 1).Turn + context.Technologies.First(m => m.Name == researchName).ResearchTime
+                    };
 
-                    researchStarted.Country = context.Countries.First(
-                        m => m.Id == activeCountryId
-                    );
 
-                    researchStarted.FinishTurn = context.Game.First(m => m.Id == 1).Turn + researchStarted.Technology.ResearchTime;
                     context.Researching.Add(researchStarted);
                     context.SaveChanges();
                     return "Research started.";
@@ -180,7 +180,7 @@ namespace EnCoOrszag.Models.DataAccess
         }
 
 
-        public string EndTurn()
+        public static void EndTurn()
         {
             using(var context = new ApplicationDbContext()){
                 List<Country> countries = context.Countries.ToList();
@@ -200,17 +200,18 @@ namespace EnCoOrszag.Models.DataAccess
                 context.Assaults.RemoveRange(context.Assaults);
                 context.Forces.RemoveRange(context.Forces);
 
+                countries = DealWithStarvation(countries);
+
                 countries = CalculateHighScore(countries);
 
                 context.SaveChanges();
-                return globalFake;
             }
             
             //finishConstruction();
             //finishResearch();
         }
 
-        public List<Country> CalculateHighScore(List<Country> countries)
+        public static List<Country> CalculateHighScore(List<Country> countries)
         {
             using (var context = new ApplicationDbContext())
             {
@@ -238,7 +239,7 @@ namespace EnCoOrszag.Models.DataAccess
             }
         }
 
-        public List<Country> ArmiesReturnHome(List<Country> countries)
+        public static List<Country> ArmiesReturnHome(List<Country> countries)
         {
             using (var context = new ApplicationDbContext())
             {
@@ -268,11 +269,9 @@ namespace EnCoOrszag.Models.DataAccess
             }
         }
 
-        string globalFake = "";
 
-        public List<Country> Battle(List<Country> countries)
+        public static List<Country> Battle(List<Country> countries)
         {
-            globalFake = "";
             using (var context = new ApplicationDbContext())
             {
                 foreach (var c in countries)
@@ -308,7 +307,6 @@ namespace EnCoOrszag.Models.DataAccess
                             defensivePower = (int)(defensivePower * defenseBonus);
 
                             //TODO: this is not suposed to be here.
-                            globalFake += "Assault from: " + c.Name + " to " + aim.Name + " with " + attackPower + " power against " + defensivePower;
 
                             if (attackPower > defensivePower)
                             {
@@ -331,7 +329,7 @@ namespace EnCoOrszag.Models.DataAccess
             }
         }
 
-        public List<Country> DealWithArmy(List<Country> countries)
+        public static List<Country> DealWithArmy(List<Country> countries)
         {
             using (var context = new ApplicationDbContext())
             {
@@ -362,7 +360,7 @@ namespace EnCoOrszag.Models.DataAccess
             }
         }
 
-        public List<Country> PayTaxesAndPotato(List<Country> countries)
+        public static List<Country> PayTaxesAndPotato(List<Country> countries)
         {
             foreach (var c in countries)
             {
@@ -392,7 +390,7 @@ namespace EnCoOrszag.Models.DataAccess
             return countries;
         }
 
-        public List<Country> FinishResearchs(List<Country> countries, int turn)
+        public static List<Country> FinishResearchs(List<Country> countries, int turn)
         {
             foreach (var c in countries)
             {
@@ -412,7 +410,7 @@ namespace EnCoOrszag.Models.DataAccess
             return countries;
         }
 
-        public List<Country> FinishBuildings(List<Country> countries, int turn)
+        public static List<Country> FinishBuildings(List<Country> countries, int turn)
         {
             foreach (var c in countries)
             {
@@ -437,7 +435,23 @@ namespace EnCoOrszag.Models.DataAccess
             return countries;
         }
 
-        public List<ConstructionViewModel> MakeConstructionViewModel()
+        public static List<Country> DealWithStarvation(List<Country> countries)
+        {
+            foreach(var c in countries){
+                if (c.Potato < 0 || c.Gold < 0)
+                {
+                    foreach (var a in c.StandingForce)
+                    {
+                        a.Size -= a.Size / 2;
+                    }
+                }
+                if (c.Potato < 0) c.Potato = 0;
+                if (c.Gold < 0) c.Gold = 0;
+            }
+            return countries;
+        }
+
+        public static List<ConstructionViewModel> MakeConstructionViewModel()
         {
             using (var context = new ApplicationDbContext())
             {
@@ -447,12 +461,13 @@ namespace EnCoOrszag.Models.DataAccess
 
                 foreach (var item in constList)
                 {
-                    ConstructionViewModel element = new ConstructionViewModel();
-                    element.Name = item.Blueprint.Name;
-                    element.TurnsLeft = item.Blueprint.BuildTime + context.Game.First(m => m.Id == 1).Turn - item.FinishTurn ;
-                    element.WholeTime = item.Blueprint.BuildTime;
-
-                    element.Id = item.Id;
+                    ConstructionViewModel element = new ConstructionViewModel()
+                    {
+                        Name = item.Blueprint.Name,
+                        TurnsLeft = item.Blueprint.BuildTime + context.Game.First(m => m.Id == 1).Turn - item.FinishTurn,
+                        WholeTime = item.Blueprint.BuildTime,
+                        Id = item.Id
+                    };
 
                     vmConstList.Add(element);
                 }
@@ -461,7 +476,7 @@ namespace EnCoOrszag.Models.DataAccess
             }
         }
 
-        public List<ResearchingViewModel> MakeResearchingViewModel()
+        public static List<ResearchingViewModel> MakeResearchingViewModel()
         {
             using (var context = new ApplicationDbContext())
             {
@@ -471,20 +486,29 @@ namespace EnCoOrszag.Models.DataAccess
 
                 researchList = context.Researching.Where(m => m.Country.Id == activeCountryId).ToList<Researching>();
 
+                List<ResearchingViewModel> rvList = context.Researching.Select(m => new ResearchingViewModel()
+                {
+                    Name = m.Technology.Name,
+                    TurnsLeft = m.Technology.ResearchTime + context.Game.First(k => k.Id == 1).Turn - m.FinishTurn, // Az nem 100
+                    WholeTime = m.Technology.ResearchTime
+                }).ToList();
+                /*
                 foreach (var item in researchList)
                 {
-                    ResearchingViewModel element = new ResearchingViewModel();
-                    element.Name = item.Technology.Name;
-                    element.TurnsLeft = item.Technology.ResearchTime + context.Game.First(m => m.Id == 1).Turn - item.FinishTurn;
-                    element.WholeTime = item.Technology.ResearchTime;
-                    element.Id = item.Id;
+                    ResearchingViewModel element = new ResearchingViewModel()
+                    {
+                        Name = item.Technology.Name,
+                        TurnsLeft = item.Technology.ResearchTime + context.Game.First(m => m.Id == 1).Turn - item.FinishTurn,
+                        WholeTime = item.Technology.ResearchTime,
+                        Id = item.Id
+                    };
                     vmResearchList.Add(element);
-                }
-                return vmResearchList;
+                }*/
+                return rvList;//vmResearchList;
             }
         }
 
-        public CountryViewModel MakeCountryViewModel()
+        public static CountryViewModel MakeCountryViewModel()
         {
             using (var context = new ApplicationDbContext())
             {
@@ -502,7 +526,7 @@ namespace EnCoOrszag.Models.DataAccess
             }
         }
 
-        public void CancelConstruction(int id)
+        public static void CancelConstruction(int id)
         {
             using (var context = new ApplicationDbContext())
             {
@@ -511,7 +535,7 @@ namespace EnCoOrszag.Models.DataAccess
             }
         }
 
-        public void CancelResearch(int id)
+        public static void CancelResearch(int id)
         {
             using (var context = new ApplicationDbContext())
             {
@@ -520,7 +544,7 @@ namespace EnCoOrszag.Models.DataAccess
             }
         }
 
-        public List<HighScoreViewModel> MakeHighScoreViewModel()
+        public static List<HighScoreViewModel> MakeHighScoreViewModel()
         {
             using (var context = new ApplicationDbContext())
             {
@@ -537,7 +561,7 @@ namespace EnCoOrszag.Models.DataAccess
             }
         }
 
-        public ArmyRecruitViewModel MakeArmyRecruitViewModel()
+        public static ArmyRecruitViewModel MakeArmyRecruitViewModel()
         {
             using(var context = new ApplicationDbContext())
             {
@@ -582,7 +606,7 @@ namespace EnCoOrszag.Models.DataAccess
             }
         }
 
-        public string RecruitTroops(int id, int amount)
+        public static string RecruitTroops(int id, int amount)
         {
             if (amount > 0)
             {
@@ -626,7 +650,7 @@ namespace EnCoOrszag.Models.DataAccess
             return "You can't recruit this many troops, make sure you have enough gold and/or living quarters.";
         }
 
-        public AssaultViewModel MakeAssaultViewModel()
+        public static AssaultViewModel MakeAssaultViewModel()
         {
             using (var context = new ApplicationDbContext())
             {
@@ -701,7 +725,7 @@ namespace EnCoOrszag.Models.DataAccess
             }
         }
 
-        public void BuildAssault(string name, int[] forces)
+        public static void BuildAssault(string name, int[] forces)
         {
             using (var context = new ApplicationDbContext())
             {
@@ -713,49 +737,24 @@ namespace EnCoOrszag.Models.DataAccess
 
                     Force archers = new Force();
                     archers.Size = forces[0];
-
                     UnitType ut = context.UnitTypes.First(m => m.Name == "Archer");
-
-                    /*ut.Id = context.UnitTypes.First(m => m.Name == "Archer").Id;
-                    ut.Upkeep = context.UnitTypes.First(m => m.Name == "Archer").Upkeep;
-                    ut.Name = context.UnitTypes.First(m => m.Name == "Archer").Name;
-                    ut.Attack = context.UnitTypes.First(m => m.Name == "Archer").Attack;
-                    ut.Defense = context.UnitTypes.First(m => m.Name == "Archer").Defense;
-                    ut.Description = context.UnitTypes.First(m => m.Name == "Archer").Description;
-                    ut.Cost = context.UnitTypes.First(m => m.Name == "Archer").Cost;
-                    ut.Payment = context.UnitTypes.First(m => m.Name == "Archer").Payment;
-                    ut.Score = context.UnitTypes.First(m => m.Name == "Archer").Score;*/
-
                     archers.Type = ut;
-
-
                     origin.StandingForce.First(m => m.Type.Name == "Archer").Size = origin.StandingForce.First(m => m.Type.Name == "Archer").Size - forces[0];
-
                     List<Force> forcesList = new List<Force>();
-
-                    
-
                     forcesList.Add(archers);
 
                     Force knights = new Force();
                     knights.Size = forces[1];
                     UnitType ut2 = context.UnitTypes.First(m => m.Name == "Knight");
-
-
                     knights.Type = ut2;
-
                     origin.StandingForce.First(m => m.Type.Name == "Knight").Size = origin.StandingForce.First(m => m.Type.Name == "Knight").Size - forces[1];
-
                     forcesList.Add(knights);
 
                     Force Elites = new Force();
                     Elites.Size = forces[2];
                     UnitType ut3 = context.UnitTypes.First(m => m.Name == "Elite");
-
                     Elites.Type = ut3;
-
                     origin.StandingForce.First(m => m.Type.Name == "Elite").Size = origin.StandingForce.First(m => m.Type.Name == "Elite").Size - forces[2];
-
                     forcesList.Add(Elites);
 
                     Assault assault = new Assault();

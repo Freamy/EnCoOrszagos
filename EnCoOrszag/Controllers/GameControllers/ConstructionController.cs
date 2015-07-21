@@ -20,12 +20,11 @@ namespace EnCoOrszag.Controllers.GameControllers
 
         public ActionResult CurrentConstructions()
         {
-            Manager manager = new Manager();
-            bool logedin = manager.IsLogedIn();
+            bool logedin = Manager.IsLogedIn();
             if (logedin) {
                 if (TempData["Cancelled"] != null) 
                     ViewBag.Message = TempData["Cancelled"].ToString();
-                return View("CurrentConstruction", manager.MakeConstructionViewModel());
+                return View("CurrentConstruction", Manager.MakeConstructionViewModel());
             }
             else
             {
@@ -36,10 +35,8 @@ namespace EnCoOrszag.Controllers.GameControllers
 
         [HttpPost]
         public ActionResult CancelConstruction(string Cancel, ConstructionViewModel vmC)
-        {
-            Manager manager = new Manager();
-            
-            manager.CancelConstruction(vmC.Id);
+        {           
+            Manager.CancelConstruction(vmC.Id);
             ModelState.Clear();
             TempData["Cancelled"] = "Construction cancelled.";
             return RedirectToAction("CurrentConstructions", "Construction");
