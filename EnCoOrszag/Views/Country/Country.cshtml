@@ -44,6 +44,15 @@
         <td>@Model.Turn</td>
     </tr>
 </table>
+<br />
+
+    @foreach (var item in Model.History)
+    {
+        <p>The attack by: @item.Attacker on @item.Defender with an army of @item.Attack power was a @item.Result against the defensive power of @item.Defense.
+        <br />The army stole @item.WonPotato potato and @item.WonGold gold, while lost @item.Losses</p>
+        <br />
+    }
+
 
 <br />
 

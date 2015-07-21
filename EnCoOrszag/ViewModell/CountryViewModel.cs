@@ -19,5 +19,7 @@ namespace EnCoOrszag.ViewModell
         public int Score { get; set; }
 
         public int Turn { get; set; }
+
+        public List<BattleResultViewModel> History { get; set; }
     }
 }

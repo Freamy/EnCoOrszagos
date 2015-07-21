@@ -13,5 +13,7 @@ namespace EnCoOrszag.ViewModell
         public virtual ICollection<Army> Armies { get; set; }
 
         public virtual ICollection<AssaultsCollectModel> Assaults { get; set; }
+
+        public string OwnName { get; set; }
     }
 }

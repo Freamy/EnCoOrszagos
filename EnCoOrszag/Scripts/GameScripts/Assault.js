@@ -13,7 +13,8 @@
         $scope.archer = '0';
         $scope.knight = '0';
         $scope.elite = '0';
-        $scope.target = $window.countries[0].Name;
+
+            $scope.target = $window.countries[0].Name;
 
         this.canSend = function () {
 
@@ -23,9 +24,11 @@
 
                 var enoughElite = $scope.elite <= this.armyStore[2].Size;
 
-            var atleastOne = $scope.archer > 0 || $scope.knight > 0 || $scope.elite > 0;
+                var cantAttackOwn = $scope.target != $window.ownName;
 
-            return !(enoughArcher && enoughKnight && enoughElite && atleastOne);
+             
+
+            return !(enoughArcher && enoughKnight && enoughElite && cantAttackOwn);
         };
 
         this.sendArmy = function () {

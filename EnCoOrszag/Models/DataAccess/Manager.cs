@@ -16,6 +16,9 @@ namespace EnCoOrszag.Models.DataAccess
         public static readonly int MAX_PARALLEL_CONSTRUCTIONS = 4;
         public static readonly int MAX_PARALLEL_RESEARCHES = 3;
 
+        //TODO: A bemeneti ertekek stringkent vannak kezelve, negativ ertekek
+        //TODO: Recruit oldalon hány katonád van
+        //TODO: Kapj forcest alapbol.
 
         public static bool IsLogedIn()
         {
@@ -76,9 +79,9 @@ namespace EnCoOrszag.Models.DataAccess
             {
                 Country country = new Country()
                 {
-                    Gold = 1000,
-                    Potato = 1000,
-                    Name = model.CountryName
+                    Gold = 10000,
+                    Potato = 10000,
+                    Name = model.CountryName,
                 };
                 context.Countries.Add(country);
                 return country;
@@ -234,6 +237,8 @@ namespace EnCoOrszag.Models.DataAccess
 
         public static List<Country> Battle(List<Country> countries)
         {
+            using (var context = new ApplicationDbContext())
+            {
                 foreach (var c in countries)
                 {
                     foreach (var a in c.Assaults)
@@ -262,9 +267,33 @@ namespace EnCoOrszag.Models.DataAccess
                             {
                                 defensivePower += f.Size * f.Type.Defense;
                             }
-
+                            
                             attackPower = (int)(attackPower * attackBonus);
                             defensivePower = (int)(defensivePower * defenseBonus);
+
+                            string result;
+                            int wonPotato = 0;
+                            int wonGold = 0;
+                            string losses = "";
+
+                            if (attackPower > defensivePower)
+                            {
+                                result = "Won";
+                                wonPotato = aim.Potato / 2;
+                                wonGold = aim.Gold / 2;
+                            }
+                            else if(attackPower == defensivePower)
+                            {
+                                result = "Tie";
+                            }
+                            else
+                            {
+                                result = "Lost";
+                            }
+
+                            
+
+                            
 
                             if (attackPower > defensivePower)
                             {
@@ -274,16 +303,41 @@ namespace EnCoOrszag.Models.DataAccess
                                 c.Potato += aim.Potato / 2;
                                 aim.Potato -= aim.Potato / 2;
 
-                                foreach(var lost in aim.StandingForce.ToList<Army>()) lost.Size = (int)(lost.Size * 0.9f);
+                                foreach (var lost in aim.StandingForce.ToList<Army>())
+                                {
+                                    lost.Size = (int)(lost.Size * 0.9f);
+                                }
                             }
                             else
                             {
-                                foreach (var lost in a.Forces.ToList<Force>()) lost.Size = (int)(lost.Size * 0.9f);
+                                foreach (var lost in a.Forces.ToList<Force>())
+                                {
+                                    int lostForces = (int)(lost.Size * 0.9f);
+                                    lost.Size = (int)(lost.Size * 0.9f);
+                                    losses += lost.Type.Name + " " + lostForces + " "; 
+                                }
                             }
+
+                            BattleHistory battle = new BattleHistory()
+                            {
+
+                                Attacker = c.Name,
+                                Defender = aim.Name,
+                                Result = result,
+                                WonGold = wonPotato,
+                                WonPotato = wonGold,
+                                Losses = losses,
+                                Attack = attackPower,
+                                Defense = defensivePower,
+                                Turn = context.Game.First(m => m.Id == 1).Turn
+                            };
+                            context.History.Add(battle);
+                            context.SaveChanges();
                         }
                     }
                 }
                 return countries;
+            }
         }
 
         public static List<Country> DealWithArmy(List<Country> countries)
@@ -464,8 +518,27 @@ namespace EnCoOrszag.Models.DataAccess
                     Gold = context.Countries.First(c => c.Id == activeCountryId).Gold,
                     Potato = context.Countries.First(c => c.Id == activeCountryId).Potato,
                     Turn = context.Game.FirstOrDefault(m => m.Id == 1).Turn
-
                 };
+
+                List<BattleResultViewModel> bhL = new List<BattleResultViewModel>();
+                foreach(var item in context.History.Where(m => m.Turn == context.Game.FirstOrDefault(mm => mm.Id == 1).Turn-1))
+                {
+                    BattleResultViewModel bh = new BattleResultViewModel()
+                    {
+                        Attack = item.Attack,
+                        Attacker = item.Attacker,
+                        Defender = item.Defender,
+                        Defense = item.Defense,
+                        Losses = item.Losses,
+                        Result = item.Result,
+                        Turn = item.Turn,
+                        WonGold = item.WonGold,
+                        WonPotato = item.WonPotato
+                    };
+                    bhL.Add(bh);
+                }
+                vmCountry.History = bhL;
+                
                 return vmCountry;
             }
         }
@@ -526,6 +599,7 @@ namespace EnCoOrszag.Models.DataAccess
                     Upkeep = m.Upkeep,
                     Description = m.Description,
                     Id = m.Id,
+                   // Size = country.StandingForce.FirstOrDefault(k => k.Type.Id == m.Id).Size
                 }).ToList();
 
                 sum = country.StandingForce.Sum(m => m.Size);
@@ -593,15 +667,15 @@ namespace EnCoOrszag.Models.DataAccess
                 int activeCountryId = context.Users.First(c => c.UserName == System.Web.HttpContext.Current.User.Identity.Name).Country.Id;
                 AssaultViewModel vmAssault = new AssaultViewModel();
 
+                vmAssault.OwnName = context.Countries.FirstOrDefault(m => m.Id == activeCountryId).Name;
+
                 List<Country> countries = new List<Country>() ;               
                 foreach (var item in context.Countries.ToList<Country>())
                 {
-                    if (item.Id != activeCountryId) { 
                         Country c = new Country();
                         c.Id = item.Id;
                         c.Name = item.Name;
                         countries.Add(c);
-                    }
                 }
 
                 vmAssault.Countries = countries;

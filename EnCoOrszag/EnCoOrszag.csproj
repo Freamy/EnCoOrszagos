@@ -184,6 +184,7 @@
     <Compile Include="Models\DataAccess\Entities\ApplicationUser.cs" />
     <Compile Include="Models\DataAccess\Entities\Army.cs" />
     <Compile Include="Models\DataAccess\Entities\Assault.cs" />
+    <Compile Include="Models\DataAccess\Entities\BattleHistory.cs" />
     <Compile Include="Models\DataAccess\Entities\Blueprints.cs" />
     <Compile Include="Models\DataAccess\Entities\Building.cs" />
     <Compile Include="Models\DataAccess\Entities\Construction.cs" />
@@ -201,6 +202,7 @@
     <Compile Include="ViewModell\ArmyRecruitViewModel.cs" />
     <Compile Include="ViewModell\AssaultsCollectModel.cs" />
     <Compile Include="ViewModell\AssaultViewModel.cs" />
+    <Compile Include="ViewModell\BattleResultViewModel.cs" />
     <Compile Include="ViewModell\BlueprintsViewModel.cs" />
     <Compile Include="ViewModell\BuildingViewModel.cs" />
     <Compile Include="ViewModell\ConstructionViewModel.cs" />
