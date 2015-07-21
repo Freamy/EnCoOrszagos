@@ -17,6 +17,5 @@ namespace EnCoOrszag.ViewModell
         public int Upkeep { get; set; }
         public int Payment { get; set; }
 
-        public int Size { get; set; }
     }
 }

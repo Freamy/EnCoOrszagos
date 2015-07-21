@@ -17,9 +17,12 @@
 
         this.canSend = function () {
 
-            var enoughArcher = $scope.archer <= $window.archerAmount;
-            var enoughKnight = $scope.knight <= $window.knightAmount;
-            var enoughElite = $scope.elite <= $window.eliteAmount;
+                var enoughArcher = $scope.archer <= this.armyStore[0].Size;
+
+                var enoughKnight = $scope.knight <= this.armyStore[1].Size;
+
+                var enoughElite = $scope.elite <= this.armyStore[2].Size;
+
             var atleastOne = $scope.archer > 0 || $scope.knight > 0 || $scope.elite > 0;
 
             return !(enoughArcher && enoughKnight && enoughElite && atleastOne);
@@ -35,13 +38,11 @@
                 'Elites': $scope.elite
             }
          
-            this.armyStore[0].Size -= $scope.archer;
-            this.armyStore[1].Size -= $scope.knight;
-            this.armyStore[2].Size -= $scope.elite;
+                this.armyStore[0].Size -= $scope.archer;
+                this.armyStore[1].Size -= $scope.knight;
+                this.armyStore[2].Size -= $scope.elite;
 
-            $window.archerAmount -= $scope.archer;
-            $window.knightAmount -= $scope.knight;
-            $window.eliteAmount -= $scope.elite;
+           
 
             var config = {
                 headers : {

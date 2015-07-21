@@ -47,7 +47,6 @@
             </select>
 
             <h3>Your current assaults.</h3>
-            {{Cont.null}}
             <table>
                 <tr>
                     <th>Target</th>
@@ -71,7 +70,4 @@
     var countries = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Countries));
     var assaults = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Assaults));
 
-    var archerAmount = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Armies.First(m => m.Type.Name == "Archer").Size));
-    var knightAmount = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Armies.First(m => m.Type.Name == "Knight").Size));
-    var eliteAmount = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Armies.First(m => m.Type.Name == "Elite").Size));
 </script>

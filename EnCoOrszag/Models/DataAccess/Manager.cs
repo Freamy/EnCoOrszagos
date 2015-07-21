@@ -10,12 +10,6 @@ using EnCoOrszag.ViewModell;
 
 namespace EnCoOrszag.Models.DataAccess
 {
-    
-
-    //TODO:  Only one context at the same time.
-    //TODO: Inicializalas: Select (b => new object ...) OR object { ... } instead of foreach everywhere.
-
-    //TODO: Build assault function is a mess.
 
     public class Manager
     {
@@ -36,32 +30,21 @@ namespace EnCoOrszag.Models.DataAccess
         {
             using (var context = new ApplicationDbContext())
             {
-                List<Blueprints> bls = context.Blueprints.ToList<Blueprints>();
-                 int activeCountryId = context.Users.First(c => c.UserName == System.Web.HttpContext.Current.User.Identity.Name).Country.Id;
-                List<Building> buildingList = context.Buildings.Where(m => m.Country.Id == activeCountryId).ToList<Building>();
-
+                int activeCountryId = context.Users.First(c => c.UserName == System.Web.HttpContext.Current.User.Identity.Name).Country.Id;
                 List<BuildingViewModel> vmBls = new List<BuildingViewModel>();
 
-            
 
-
-                foreach (var item in bls)
+                vmBls = context.Blueprints.Select(m => new BuildingViewModel()
                 {
-                    BuildingViewModel vmTemp = new BuildingViewModel()
-                    {
-                        BuildTime = item.BuildTime,
-                        Name = item.Name,
-                        Cost = item.Cost,
-                        Description = item.Description,
-                        Repeatable = item.Repeatable,
-                    };
-                   
-                    if (context.Buildings.FirstOrDefault(m => m.Blueprint.Name == item.Name) != null)
-                        vmTemp.NoOfFinishedBlueprints = context.Buildings.First(m => m.Blueprint.Name == item.Name).NumberOfBuildings;
-                    else
-                        vmTemp.NoOfFinishedBlueprints = 0;                    
-                    vmBls.Add(vmTemp);
-                }
+                    Name = m.Name,
+                    Cost = m.Cost,
+                    Description = m.Description,
+                    Repeatable = m.Repeatable,
+                    BuildTime = m.BuildTime,
+                    NoOfFinishedBlueprints = context.Buildings.Where(k => k.Country.Id == activeCountryId)
+                     .FirstOrDefault(k => k.Blueprint.Name == m.Name) != null ? context.Buildings
+                     .FirstOrDefault(k => k.Blueprint.Name == m.Name).NumberOfBuildings : 0
+                }).ToList();
 
                 return vmBls;
             }
@@ -72,39 +55,17 @@ namespace EnCoOrszag.Models.DataAccess
             using (var context = new ApplicationDbContext())
             {
                 List<ResearchViewModel> vmResearch = new List<ResearchViewModel>();
-
-                List<Technology> techList = context.Technologies.ToList<Technology>();
-                
+               
                 int activeCountryId = context.Users.First(c => c.UserName == System.Web.HttpContext.Current.User.Identity.Name).Country.Id;
-                foreach (var tech in techList)
+
+                vmResearch = context.Technologies.Select(m => new ResearchViewModel()
                 {
-                    ResearchViewModel temp = new ResearchViewModel()
-                    {
-                        Name = tech.Name,
-                        Description = tech.Description,
-                    };
-
-                    if (context.Researches.Count() > 0)
-                    {
-                         if(context.Researches.Where(
-                            m => m.Country.Id == activeCountryId)
-                            .FirstOrDefault(c => c.Technology.Id == tech.Id) != null)
-                         {
-                             temp.Researched = true;
-                         }
-                         else
-                         {
-                             temp.Researched = false;
-                         }
-                    }
-                    else
-                    {
-                        temp.Researched = false;
-                    }
-                    vmResearch.Add(temp);
-                }
-
-                return vmResearch;
+                    Name = m.Name,
+                    Description = m.Description,
+                    Researched = context.Researches.Where(k => k.Country.Id == activeCountryId).FirstOrDefault(k => k.Technology.Id == m.Id) != null 
+                    ? true : false
+                }).ToList();
+                 return vmResearch;
             }
         }
 
@@ -239,6 +200,7 @@ namespace EnCoOrszag.Models.DataAccess
             }
         }
 
+  
         public static List<Country> ArmiesReturnHome(List<Country> countries)
         {
             using (var context = new ApplicationDbContext())
@@ -272,8 +234,6 @@ namespace EnCoOrszag.Models.DataAccess
 
         public static List<Country> Battle(List<Country> countries)
         {
-            using (var context = new ApplicationDbContext())
-            {
                 foreach (var c in countries)
                 {
                     foreach (var a in c.Assaults)
@@ -306,8 +266,6 @@ namespace EnCoOrszag.Models.DataAccess
                             attackPower = (int)(attackPower * attackBonus);
                             defensivePower = (int)(defensivePower * defenseBonus);
 
-                            //TODO: this is not suposed to be here.
-
                             if (attackPower > defensivePower)
                             {
                                 c.Gold += aim.Gold / 2;
@@ -326,7 +284,6 @@ namespace EnCoOrszag.Models.DataAccess
                     }
                 }
                 return countries;
-            }
         }
 
         public static List<Country> DealWithArmy(List<Country> countries)
@@ -398,10 +355,12 @@ namespace EnCoOrszag.Models.DataAccess
                 {
                     foreach (var r in c.Researching.Where(m => m.FinishTurn == turn).ToList())
                     {
-                        Research rs = new Research();
-                        rs.Country = c;
-                        rs.Technology = c.Researching.First(i => i.Technology.Id == r.Technology.Id).Technology;
-                        rs.Finished = true;
+                        Research rs = new Research()
+                        {
+                            Country = c,
+                            Technology = c.Researching.FirstOrDefault(i => i.Technology.Id == r.Technology.Id).Technology,
+                            Finished = true,
+                        };
                         c.Researches.Add(rs);
                         c.Researching.Remove(c.Researching.Single(m => m.Id == r.Id));
                     }
@@ -421,11 +380,14 @@ namespace EnCoOrszag.Models.DataAccess
                         Building bs = c.Buildings.FirstOrDefault(k => k.Blueprint == b.Blueprint);
                         if(bs == null)
                         {
-                            bs = new Building();
+                            bs = new Building()
+                            {
+                                Blueprint = b.Blueprint,
+                                Country = b.Country,
+                                NumberOfBuildings = 0
+                            };
                             c.Buildings.Add(bs);
                         }
-                        bs.Blueprint = b.Blueprint;
-                        bs.Country = c;
                         bs.NumberOfBuildings += 1;
                         if (b.Blueprint.Name == "Cottage") c.Population += 50;
                         c.Construction.Remove(c.Construction.Single(m => m.Id == b.Id));
@@ -459,18 +421,13 @@ namespace EnCoOrszag.Models.DataAccess
                 List<ConstructionViewModel> vmConstList = new List<ConstructionViewModel>();
                 List<Construction> constList = context.Constructions.Where(m => m.Country.Id == activeCountryId).ToList<Construction>();
 
-                foreach (var item in constList)
+                vmConstList = context.Constructions.Select(m => new ConstructionViewModel()
                 {
-                    ConstructionViewModel element = new ConstructionViewModel()
-                    {
-                        Name = item.Blueprint.Name,
-                        TurnsLeft = item.Blueprint.BuildTime + context.Game.First(m => m.Id == 1).Turn - item.FinishTurn,
-                        WholeTime = item.Blueprint.BuildTime,
-                        Id = item.Id
-                    };
-
-                    vmConstList.Add(element);
-                }
+                    Name = m.Blueprint.Name,
+                    TurnsLeft = m.Blueprint.BuildTime + context.Game.FirstOrDefault(k => k.Id == 1).Turn - m.FinishTurn,
+                    WholeTime = m.Blueprint.BuildTime,
+                    Id = m.Id
+                }).ToList();
 
                 return vmConstList;
             }
@@ -481,30 +438,16 @@ namespace EnCoOrszag.Models.DataAccess
             using (var context = new ApplicationDbContext())
             {
                 int activeCountryId = context.Users.First(c => c.UserName == System.Web.HttpContext.Current.User.Identity.Name).Country.Id;
-                List<ResearchingViewModel> vmResearchList = new List<ResearchingViewModel>();
-                List<Researching> researchList = new List<Researching>();
 
-                researchList = context.Researching.Where(m => m.Country.Id == activeCountryId).ToList<Researching>();
-
-                List<ResearchingViewModel> rvList = context.Researching.Select(m => new ResearchingViewModel()
+                List<ResearchingViewModel> vmResearchList = context.Researching.Select(m => new ResearchingViewModel()
                 {
                     Name = m.Technology.Name,
-                    TurnsLeft = m.Technology.ResearchTime + context.Game.First(k => k.Id == 1).Turn - m.FinishTurn, // Az nem 100
-                    WholeTime = m.Technology.ResearchTime
+                    TurnsLeft = m.Technology.ResearchTime + context.Game.FirstOrDefault(k => k.Id == 1).Turn - m.FinishTurn,
+                    WholeTime = m.Technology.ResearchTime,
+                    Id = m.Id
                 }).ToList();
-                /*
-                foreach (var item in researchList)
-                {
-                    ResearchingViewModel element = new ResearchingViewModel()
-                    {
-                        Name = item.Technology.Name,
-                        TurnsLeft = item.Technology.ResearchTime + context.Game.First(m => m.Id == 1).Turn - item.FinishTurn,
-                        WholeTime = item.Technology.ResearchTime,
-                        Id = item.Id
-                    };
-                    vmResearchList.Add(element);
-                }*/
-                return rvList;//vmResearchList;
+  
+                return vmResearchList;
             }
         }
 
@@ -513,15 +456,16 @@ namespace EnCoOrszag.Models.DataAccess
             using (var context = new ApplicationDbContext())
             {
                 int activeCountryId = context.Users.First(c => c.UserName == System.Web.HttpContext.Current.User.Identity.Name).Country.Id;
-                CountryViewModel vmCountry = new CountryViewModel();
-                string uName = System.Web.HttpContext.Current.User.Identity.Name;
-                Country country = context.Countries.First(c => c.Id == activeCountryId);
-                vmCountry.Id = country.Id;
-                vmCountry.Name = country.Name;
-                vmCountry.Score = country.Score;
-                vmCountry.Gold = country.Gold;
-                vmCountry.Potato = country.Potato;
-                vmCountry.Turn = context.Game.First(m => m.Id == 1).Turn;
+                CountryViewModel vmCountry = new CountryViewModel()
+                {
+                    Id = context.Countries.First(c => c.Id == activeCountryId).Id,
+                    Name = context.Countries.First(c => c.Id == activeCountryId).Name,
+                    Score = context.Countries.First(c => c.Id == activeCountryId).Score,
+                    Gold = context.Countries.First(c => c.Id == activeCountryId).Gold,
+                    Potato = context.Countries.First(c => c.Id == activeCountryId).Potato,
+                    Turn = context.Game.FirstOrDefault(m => m.Id == 1).Turn
+
+                };
                 return vmCountry;
             }
         }
@@ -549,13 +493,12 @@ namespace EnCoOrszag.Models.DataAccess
             using (var context = new ApplicationDbContext())
             {
                 List<HighScoreViewModel> vmH = new List<HighScoreViewModel>();
-                foreach (var c in context.Countries.ToList())
+                vmH = context.Countries.Select(m => new HighScoreViewModel()
                 {
-                    HighScoreViewModel hs = new HighScoreViewModel();
-                    hs.Name = c.Name;
-                    hs.Score = c.Score;
-                    vmH.Add(hs);
-                }
+                    Name = m.Name,
+                    Score = m.Score
+                }).ToList();
+                
                 vmH = vmH.OrderByDescending(m => m.Score).ToList();
                 return vmH;
             }
@@ -568,40 +511,34 @@ namespace EnCoOrszag.Models.DataAccess
 
                 int activeCountryId = context.Users.First(c => c.UserName == System.Web.HttpContext.Current.User.Identity.Name).Country.Id;
 
-                ArmyRecruitViewModel vmAR = new ArmyRecruitViewModel();
-                vmAR.Gold = context.Countries.First(m => m.Id == activeCountryId).Gold;
-                vmAR.Potato = context.Countries.First(m => m.Id == activeCountryId).Potato;
                 List<UnitType> unitList = context.UnitTypes.ToList<UnitType>();
                 List<UnitTypeViewModel> vmUnit = new List<UnitTypeViewModel>();
 
                 Country country = context.Countries.First(m => m.Id == activeCountryId);
                 int sum = 0;
-                foreach (var item in unitList)
+                vmUnit = context.UnitTypes.Select(m => new UnitTypeViewModel()
                 {
-                    UnitTypeViewModel vmUT = new UnitTypeViewModel();
-                    vmUT.Name = item.Name;
-                    vmUT.Payment = item.Payment;
-                    vmUT.Attack = item.Attack;
-                    vmUT.Defense = item.Defense;
-                    vmUT.Cost = item.Cost;
-                    vmUT.Upkeep = item.Upkeep;
-                    vmUT.Description = item.Description;
-                    Army army = country.StandingForce.FirstOrDefault(m => m.Type.Id == item.Id);
-                    if (army == null)
-                        vmUT.Size = 0;
-                    else
-                        vmUT.Size = army.Size;
-                    vmUT.Id = item.Id;
-                    sum += vmUT.Size;
-                    vmUnit.Add(vmUT);
-                }
-                vmAR.Types = vmUnit;
-                vmAR.OccupiedSpace = sum;
-                Building building = context.Buildings.Where(m => m.Country.Id == activeCountryId).FirstOrDefault(m => m.Blueprint.Name == "Barrack");
-                if (building == null) sum = 0;
-                else sum = building.NumberOfBuildings;
-                sum = sum * 200;
-                vmAR.AllSpace = sum;
+                    Name = m.Name,
+                    Payment = m.Payment,
+                    Attack = m.Attack,
+                    Defense = m.Defense,
+                    Cost = m.Cost,
+                    Upkeep = m.Upkeep,
+                    Description = m.Description,
+                    Id = m.Id,
+                }).ToList();
+
+                sum = country.StandingForce.Sum(m => m.Size);
+         
+                ArmyRecruitViewModel vmAR = new ArmyRecruitViewModel()
+                {
+                    Types = vmUnit,
+                    OccupiedSpace = sum,
+                    AllSpace = context.Buildings.Where(m => m.Country.Id == activeCountryId).FirstOrDefault(m => m.Blueprint.Name == "Barrack") != null 
+                    ? context.Buildings.Where(m => m.Country.Id == activeCountryId).FirstOrDefault(m => m.Blueprint.Name == "Barrack").NumberOfBuildings *200 : 0
+                };
+                vmAR.Gold = context.Countries.First(m => m.Id == activeCountryId).Gold;
+                vmAR.Potato = context.Countries.First(m => m.Id == activeCountryId).Potato;
                 return vmAR;
             }
         }
@@ -616,14 +553,12 @@ namespace EnCoOrszag.Models.DataAccess
 
                     Country country = context.Countries.First(m => m.Id == activeCountryId);
                     List<Army> armies = country.StandingForce.ToList<Army>();
-                    int armySize = 0;
-                    foreach (var item in armies)
-                    {
-                        armySize += item.Size;
-                    }
+                    int armySize = country.StandingForce.Sum(m => m.Size);
                     int cost = context.UnitTypes.First(m => m.Id == id).Cost;
                     bool enoughPlace = context.Buildings.Where(m => m.Country.Id == activeCountryId)
-                        .First(m => m.Blueprint.Name == "Barrack").NumberOfBuildings*200 >= (armySize + amount);
+                        .FirstOrDefault(m => m.Blueprint.Name == "Barrack") != null ?
+                        context.Buildings.Where(m => m.Country.Id == activeCountryId)
+                        .First(m => m.Blueprint.Name == "Barrack").NumberOfBuildings*200 >= (armySize + amount) : false;
 
                     if (country.Gold >= cost * amount && enoughPlace)
                     {
@@ -631,10 +566,11 @@ namespace EnCoOrszag.Models.DataAccess
                         UnitType ut = context.UnitTypes.First(m => m.Id == id);
                         if (standing == null)
                         {
-                            standing = new Army();
-                            standing.Type = ut;
-
-                            standing.Size = amount;
+                            standing = new Army()
+                            {
+                                Type = ut,
+                                Size = amount
+                            };
                             country.StandingForce.Add(standing);
                         }
                         else
@@ -657,7 +593,7 @@ namespace EnCoOrszag.Models.DataAccess
                 int activeCountryId = context.Users.First(c => c.UserName == System.Web.HttpContext.Current.User.Identity.Name).Country.Id;
                 AssaultViewModel vmAssault = new AssaultViewModel();
 
-                List<Country> countries = new List<Country>() ;
+                List<Country> countries = new List<Country>() ;               
                 foreach (var item in context.Countries.ToList<Country>())
                 {
                     if (item.Id != activeCountryId) { 
@@ -674,6 +610,18 @@ namespace EnCoOrszag.Models.DataAccess
 
                 List<Army> armies = new List<Army>();
 
+                armies = country.StandingForce.Select(m => new Army()
+                {
+                    Size = m.Size,
+                    Type = new UnitType()
+                    {
+                        Name = m.Type.Name,
+                        Attack = m.Type.Attack,
+                        Defense = m.Type.Defense,
+                        Description = m.Type.Description
+                    }
+                }).ToList();
+                /*
                 foreach (var item in country.StandingForce.ToList<Army>())
                 {
                     Army army = new Army();
@@ -685,7 +633,7 @@ namespace EnCoOrszag.Models.DataAccess
                     ut.Description = item.Type.Description;
                     army.Type = ut;
                     armies.Add(army);
-                }
+                }*/
 
                 
                // vmAssault.Armies = country.StandingForce.ToList<Army>();
@@ -696,25 +644,41 @@ namespace EnCoOrszag.Models.DataAccess
                 foreach (var item in country.Assaults.ToList<Assault>())
                 {
                     AssaultsCollectModel assault = new AssaultsCollectModel();
-                    
-                    Country c = new Country();
-                    c.Id = item.Target.Id;
-                    c.Name = item.Target.Name;
+
+                    Country c = new Country()
+                    {
+                        Id = item.Target.Id,
+                        Name = item.Target.Name
+                    };
 
                     assault.Country = c;
 
                     List<Force> newForces = new List<Force>();
 
-                    foreach (var f in item.Forces.ToList<Force>())
+                    newForces = item.Forces.Select(
+                        m => new Force(){
+                            Size = m.Size,
+                            Type = new UnitType()
+                            {
+                                Id = m.Type.Id,
+                                Name = m.Type.Name,
+                            }
+                        }
+                     ).ToList();
+
+                    /*foreach (var f in item.Forces.ToList<Force>())
                     {
-                        Force newForce = new Force();
+                        Force newForce = new Force()
+                        {
+                            Size = f.Size
+                        };
                         newForce.Size = f.Size;
                         UnitType newType = new UnitType();
                         newType.Id = f.Type.Id;
                         newType.Name = f.Type.Name;
                         newForce.Type = newType;
                         newForces.Add(newForce);
-                    }
+                    }*/
 
                     assault.Forces = newForces;
                     cmAssault.Add(assault);
@@ -735,26 +699,34 @@ namespace EnCoOrszag.Models.DataAccess
                 {
                     Country origin = context.Countries.FirstOrDefault(m => m.Id == activeCountryId);
 
-                    Force archers = new Force();
-                    archers.Size = forces[0];
-                    UnitType ut = context.UnitTypes.First(m => m.Name == "Archer");
-                    archers.Type = ut;
-                    origin.StandingForce.First(m => m.Type.Name == "Archer").Size = origin.StandingForce.First(m => m.Type.Name == "Archer").Size - forces[0];
+                    Force archers = new Force()
+                    {
+                        Size = forces[0],
+                        Type  = context.UnitTypes.First(m => m.Name == "Archer")
+                    };
+                    if(origin.StandingForce.FirstOrDefault(m => m.Type.Name == "Archer") != null)
+                        origin.StandingForce.First(m => m.Type.Name == "Archer").Size = origin.StandingForce.First(m => m.Type.Name == "Archer").Size - forces[0];
                     List<Force> forcesList = new List<Force>();
                     forcesList.Add(archers);
 
-                    Force knights = new Force();
-                    knights.Size = forces[1];
-                    UnitType ut2 = context.UnitTypes.First(m => m.Name == "Knight");
-                    knights.Type = ut2;
-                    origin.StandingForce.First(m => m.Type.Name == "Knight").Size = origin.StandingForce.First(m => m.Type.Name == "Knight").Size - forces[1];
+                    Force knights = new Force()
+                    {
+                        Size = forces[1],
+                        Type = context.UnitTypes.First(m => m.Name == "Knight")
+                    };
+
+                    if (origin.StandingForce.FirstOrDefault(m => m.Type.Name == "Knight") != null)
+                        origin.StandingForce.First(m => m.Type.Name == "Knight").Size = origin.StandingForce.First(m => m.Type.Name == "Knight").Size - forces[1];
                     forcesList.Add(knights);
 
-                    Force Elites = new Force();
-                    Elites.Size = forces[2];
-                    UnitType ut3 = context.UnitTypes.First(m => m.Name == "Elite");
-                    Elites.Type = ut3;
-                    origin.StandingForce.First(m => m.Type.Name == "Elite").Size = origin.StandingForce.First(m => m.Type.Name == "Elite").Size - forces[2];
+                    Force Elites = new Force()
+                    {
+                        Size = forces[2],
+                        Type = context.UnitTypes.First(m => m.Name == "Elite")
+                    };
+
+                    if (origin.StandingForce.FirstOrDefault(m => m.Type.Name == "Elite") != null)
+                     origin.StandingForce.First(m => m.Type.Name == "Elite").Size = origin.StandingForce.First(m => m.Type.Name == "Elite").Size - forces[2];
                     forcesList.Add(Elites);
 
                     Assault assault = new Assault();
