@@ -658,8 +658,13 @@ namespace EnCoOrszag.Models.DataAccess
                     Upkeep = m.Upkeep,
                     Description = m.Description,
                     Id = m.Id,
-                    Size = context.Armies.FirstOrDefault(k => k.Type.Id == m.Id).Size
+                    //Size = context.Armies.FirstOrDefault(k => k.Type.Id == m.Id).Size
                 }).ToList();
+
+                foreach (var item in vmUnit)
+                {
+                    item.Size = country.StandingForce.FirstOrDefault(m => m.Type.Id == item.Id).Size;
+                }
 
                 sum = country.StandingForce.Sum(m => m.Size);
          
