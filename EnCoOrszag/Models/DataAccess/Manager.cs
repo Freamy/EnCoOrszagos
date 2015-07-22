@@ -10,7 +10,7 @@ using EnCoOrszag.ViewModell;
 
 namespace EnCoOrszag.Models.DataAccess
 {
-
+    //komment: xml kommentek ezen is nagyon fontosak lennének, itt van a teljes üzleti logikat gyakorlatilag
     public class Manager
     {
         public static readonly int MAX_PARALLEL_CONSTRUCTIONS = 4;
@@ -20,6 +20,9 @@ namespace EnCoOrszag.Models.DataAccess
         //TODO: Recruit oldalon hány katonád van
         //TODO: Kapj forcest alapbol.
 
+        //komment: ez logikailag nagyon nem ide való, az osztály HttpContext-től függése pedig különösen rossz.
+        // mi van olyankor, ha unit tesztelni szeretnénk az üzleti logikát? emiatt nem lehet, mert a tesztkörnyezetben
+        // nem létezik httpcontext, ami pedig bele van betonozva az osztály működésébe
         public static bool IsLogedIn()
         {
             if (System.Web.HttpContext.Current.User.Identity.IsAuthenticated)
@@ -342,6 +345,9 @@ namespace EnCoOrszag.Models.DataAccess
 
         public static List<Country> DealWithArmy(List<Country> countries)
         {
+            //komment: ezekben a függvényekben még mindig két DbContext létezik egymás mellett, 
+            // ami nagyon nagy hiba, ezt valahogy meg kell oldani, mert idegesítő és debugolhatatlan hibákat eredményezhez,
+            // amiknél csak sejteni lehet, hogy ez a baj, de nem determinisztikus volta miatt végtelen idő elmegy, mire rájössz
             using (var context = new ApplicationDbContext())
             {
                 foreach (var c in countries)

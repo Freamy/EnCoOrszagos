@@ -1,11 +1,15 @@
 ﻿(function () {
+    //komment: használjunk strict módot angularhoz
+    "use strict";
+
     var app = angular.module('AssaultApp', []);
     var armyStore = []; //Army
     var countryStore = []; //Countries
     var assaultStore = []; //Assaults
 
     app.controller('MainEnCoController', ['$scope', '$window', '$http', '$location', function ($scope, $window, $http, $location) {
-
+        //komment: döntsük el, hogy pokakoljuk a modelre a dolgokat: this.myProp-pal vagy $scope.myProp-pal, de akkor az legyen egységes
+        // egyébként a $scope-os a preferált, ennek is meg vannak az okai, tutorialban is ez van, a this-es csak legacy támogatás miatt él még
         this.armyStore = $window.armyModel;
         this.assaultStore = $window.assaults;
         this.countryStore = $window.countries;
@@ -46,7 +50,8 @@
                 this.armyStore[2].Size -= $scope.elite;
 
            
-
+            //komment: az ilyeneket globálisan lehet állítani, ha szükség van rá, így nem kell minden postnak megadni configként.
+            // itt egyébként nincs rá szükség, valahol máshol volt a hiba, ha enélkül nem kapta meg a json-t az MVC
             var config = {
                 headers : {
                     'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
@@ -54,6 +59,9 @@
             }
 
             $http.post('/Assault/SendAssault', send, config).then(function (result) {
+                //komment: ez nagyon-nagyon-nagyon nem jó így. hol nézed, hogy mi jött válaszként a post-ra?
+                // mi van, ha hiba volt, és nem is indította el az adott assaultot? ez akkora is be fogja pusholni a listába.
+                // másrészt ez a hatalmas object kézzel bepusholása nagyon ronda, biztos lehetne ezt szebben is.
                     $window.assaults.push(
                         {
                             "Country": { "Id": null, "User": null, "StandingForce": null, "Assaults": null, "Construction": null, "Buildings": null, "Researching": null, "Researches": null, "Name": $scope.target, "Gold": 0, "Potato": 0, "Population": 0, "Score": 0 },

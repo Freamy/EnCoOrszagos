@@ -36,7 +36,7 @@ namespace EnCoOrszag.Controllers.GameControllers
             }
         }
 
-
+        //komment: nem comparálunk nevet azonosítóként!!
         public ActionResult BuildSomething(string submit)
         {
             Manager manager = new Manager();
