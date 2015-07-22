@@ -16,9 +16,7 @@ namespace EnCoOrszag.Models.DataAccess
         public static readonly int MAX_PARALLEL_CONSTRUCTIONS = 4;
         public static readonly int MAX_PARALLEL_RESEARCHES = 3;
 
-        //TODO: Kapj forcest alapbol.
-
-        public static List<BuildingViewModel> MakeBuildingViewModel()
+         public static List<BuildingViewModel> MakeBuildingViewModel()
         {
             using (var context = new ApplicationDbContext())
             {
@@ -638,9 +636,15 @@ namespace EnCoOrszag.Models.DataAccess
 
                 Country country = context.Countries.First(m => m.Id == activeCountryId);
 
-                Manager.RecruitTroops(1, 0);
-                Manager.RecruitTroops(3, 0);
-                Manager.RecruitTroops(4, 0);
+                if (country.StandingForce.FirstOrDefault(m => m.Id == 1) == null) { 
+
+                    List<UnitType> types = context.UnitTypes.ToList<UnitType>();
+
+                    foreach(var type in types){
+                        Manager.RecruitTroops(type.Id, 0);
+                    }
+                }
+
 
                 int sum = 0;
                 List<Army> standing = country.StandingForce.ToList();
