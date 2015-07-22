@@ -18,32 +18,36 @@
 
         this.canSend = function () {
 
-                var enoughArcher = $scope.archer <= this.armyStore[0].Size;
+                var enoughArcher = $scope.archer <= this.armyStore[0].Size && $scope.archer >= 0; 
 
-                var enoughKnight = $scope.knight <= this.armyStore[1].Size;
+                var enoughKnight = $scope.knight <= this.armyStore[1].Size && $scope.knight >= 0;
 
-                var enoughElite = $scope.elite <= this.armyStore[2].Size;
+                var enoughElite = $scope.elite <= this.armyStore[2].Size && $scope.elite >= 0;
+
+                var moreThenZero = ($scope.archer + $scope.knight + $scope.elite) != 0;
 
                 var cantAttackOwn = $scope.target != $window.ownName;
 
-             
-
-            return !(enoughArcher && enoughKnight && enoughElite && cantAttackOwn);
+            return !(enoughArcher && enoughKnight && enoughElite && cantAttackOwn && moreThenZero);
         };
 
         this.sendArmy = function () {
+            
+            var archers = parseInt($scope.archer);
+            var knight = parseInt($scope.knight);
+            var elite = parseInt($scope.elite);
 
             
             var send = {
                'Name': $scope.target,
-                'Archers': $scope.archer,
-                'Knights': $scope.knight,
-                'Elites': $scope.elite
+                'Archers': archers,
+                'Knights': knight,
+                'Elites': elite
             }
          
-                this.armyStore[0].Size -= $scope.archer;
-                this.armyStore[1].Size -= $scope.knight;
-                this.armyStore[2].Size -= $scope.elite;
+                this.armyStore[0].Size -= archers;
+                this.armyStore[1].Size -= knight;
+                this.armyStore[2].Size -= elite;
 
            
 
@@ -57,9 +61,9 @@
                     $window.assaults.push(
                         {
                             "Country": { "Id": null, "User": null, "StandingForce": null, "Assaults": null, "Construction": null, "Buildings": null, "Researching": null, "Researches": null, "Name": $scope.target, "Gold": 0, "Potato": 0, "Population": 0, "Score": 0 },
-                            "Forces": [{ "Id": 0, "Size": $scope.archer, "Type": { "Id": 1, "Name": "Archer", "Description": null, "Attack": 0, "Defense": 0, "Cost": 0, "Upkeep": 0, "Payment": 0, "Score": 0 } },
-                                { "Id": 0, "Size": $scope.knight, "Type": { "Id": 3, "Name": "Knight", "Description": null, "Attack": 0, "Defense": 0, "Cost": 0, "Upkeep": 0, "Payment": 0, "Score": 0 } },
-                                { "Id": 0, "Size": $scope.elite, "Type": { "Id": 4, "Name": "Elite", "Description": null, "Attack": 0, "Defense": 0, "Cost": 0, "Upkeep": 0, "Payment": 0, "Score": 0 } }]
+                            "Forces": [{ "Id": 0, "Size": archers, "Type": { "Id": 1, "Name": "Archer", "Description": null, "Attack": 0, "Defense": 0, "Cost": 0, "Upkeep": 0, "Payment": 0, "Score": 0 } },
+                                { "Id": 0, "Size": knight, "Type": { "Id": 3, "Name": "Knight", "Description": null, "Attack": 0, "Defense": 0, "Cost": 0, "Upkeep": 0, "Payment": 0, "Score": 0 } },
+                                { "Id": 0, "Size": elite, "Type": { "Id": 4, "Name": "Elite", "Description": null, "Attack": 0, "Defense": 0, "Cost": 0, "Upkeep": 0, "Payment": 0, "Score": 0 } }]
                         }
                         );
                     $scope.archer = '0';

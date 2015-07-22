@@ -160,12 +160,7 @@ namespace EnCoOrszag.Controllers
                 // For country creation
                 Country country = Manager.GetNewCountry(model);
                 user.Country = country;
-
-                //EXAMPLE
-                // Blueprints blueprint = apDb.Blueprints.Single(m => m.Name == model.StartingBuilding); usefull reminder but wrong here.
-                
-                
-
+            
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
