@@ -18,15 +18,6 @@ namespace EnCoOrszag.Models.DataAccess
 
         //TODO: Kapj forcest alapbol.
 
-        public static bool IsLogedIn()
-        {
-            if (System.Web.HttpContext.Current.User.Identity.IsAuthenticated)
-            {
-                return true;
-            }
-            return false;
-        }
-
         public static List<BuildingViewModel> MakeBuildingViewModel()
         {
             using (var context = new ApplicationDbContext())
@@ -90,7 +81,7 @@ namespace EnCoOrszag.Models.DataAccess
 
         public static string RecruitTroops(int id, int amount)
         {
-            if (amount > 0)
+            if (amount >= 0)
             {
                 using (var context = new ApplicationDbContext())
                 {
@@ -647,7 +638,9 @@ namespace EnCoOrszag.Models.DataAccess
 
                 Country country = context.Countries.First(m => m.Id == activeCountryId);
 
-        
+                Manager.RecruitTroops(1, 0);
+                Manager.RecruitTroops(3, 0);
+                Manager.RecruitTroops(4, 0);
 
                 int sum = 0;
                 List<Army> standing = country.StandingForce.ToList();

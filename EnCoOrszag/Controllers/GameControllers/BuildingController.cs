@@ -10,6 +10,7 @@ using EnCoOrszag.ViewModell;
 
 namespace EnCoOrszag.Controllers.GameControllers
 {
+    [Authorize]
     public class BuildingController : Controller
     {
         //
@@ -21,19 +22,12 @@ namespace EnCoOrszag.Controllers.GameControllers
 
         public ActionResult Building()
         {
-            bool logedin = Manager.IsLogedIn();
 
-            if (logedin) {
                 if(TempData["Response"] != null)
                     ViewBag.Message = TempData["Response"].ToString();
                 List<BuildingViewModel> vmBuild = Manager.MakeBuildingViewModel();
                 return View("Build", vmBuild);
-            }
-            else
-            {
-                ViewBag.Message = "Please register a new user.";
-                return RedirectToAction("Login", "Account");
-            }
+
         }
 
         public ActionResult BuildSomething(BuildingViewModel bvm)

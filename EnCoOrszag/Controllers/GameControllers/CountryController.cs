@@ -27,10 +27,7 @@ namespace EnCoOrszag.Controllers.Entities
         
         public ActionResult Country()
         {
-
-                return View(Manager.MakeCountryViewModel());
-
-
+            return View(Manager.MakeCountryViewModel());
         }
 
         public ActionResult EndTurn()

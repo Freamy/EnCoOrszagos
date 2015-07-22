@@ -9,6 +9,7 @@ using EnCoOrszag.Models.DataAccess;
 
 namespace EnCoOrszag.Controllers.GameControllers
 {
+    [Authorize]
     public class ConstructionController : Controller
     {
         //
@@ -20,17 +21,11 @@ namespace EnCoOrszag.Controllers.GameControllers
 
         public ActionResult CurrentConstructions()
         {
-            bool logedin = Manager.IsLogedIn();
-            if (logedin) {
+
                 if (TempData["Cancelled"] != null) 
                     ViewBag.Message = TempData["Cancelled"].ToString();
                 return View("CurrentConstruction", Manager.MakeConstructionViewModel());
-            }
-            else
-            {
-                ViewBag.Message = "Please register a new user.";
-                return RedirectToAction("Login", "Account");
-            }
+ 
         }
 
         [HttpPost]
