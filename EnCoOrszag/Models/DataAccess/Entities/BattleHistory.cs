@@ -8,6 +8,8 @@ namespace EnCoOrszag.Models.DataAccess.Entities
     public class BattleHistory
     {
         public int Id { get; set; }
+        //komment: ne használjuk a nagybetűs stringet, ő egy osztályba csomagolt kisbetűs string, sokkal nagyobb footprinttel.
+        // ez csak arra való, ha kollekcióban object ős helyén akarunk stringet tárolni, vagy más okból referenciatípusra van szükségünk 
         public String Attacker { get; set; }
         public String Defender { get; set; }
         public int WonPotato { get; set; }
