@@ -24,7 +24,11 @@ namespace EnCoOrszag.Controllers.GameControllers
 
             if (logedin)
             {
-
+                //komment: ha tempdatát szeretnénk használni üzenetküldésre, készítsünk hozzá wrapper osztályt, ami elfedi magát a tempdata
+                // használatát, mivel ez egy string-es dictionary gyakorlatilag, nagyon hamar elburjánzhat, hogy milyen key-el mi van, 
+                // mit hol kell visszaolvasni, stb. stb.
+                // másik: ezt nagyon feleslegesnek érzem. ha már mindenképp tempdatát bányászunk, akkor miért tesszük át külön a viewbag-be?
+                // a Tempdata ugyanúgy elérhető a cshtml-ekben is.
                 if (TempData["Response"] != null)
                     ViewBag.Message = TempData["Response"].ToString();
 
@@ -40,7 +44,7 @@ namespace EnCoOrszag.Controllers.GameControllers
 
         public ActionResult ResearchSomething(string submit)
         {
-            Manager manager = new Manager();
+            Manager manager = new Manager();//komment: ez sem kell ugye már a staticok miatt
 
             TempData["Response"] = Manager.StartResearch(submit);
 

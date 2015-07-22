@@ -39,7 +39,7 @@ namespace EnCoOrszag.Controllers.Entities
         public ActionResult EndTurn()
         {
             Manager.EndTurn();
-            RedirectToAction("country");
+            RedirectToAction("country"); //komment: ?:))
             return RedirectToAction("Country");
         }
 

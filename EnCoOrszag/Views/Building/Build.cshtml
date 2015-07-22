@@ -33,6 +33,9 @@
 
         <tr>
             <td align="center">
+                @* komment: ez sem valid html, kellenek a tagekhez a macskakaparások
+                a @item.Name egy az egyben belerendereli a szöveget arra a helyre. Bár az értelmesebb böngészük megeszik
+                így is, ha több szóból állna  anév, akkor csak az első szó kerülne a value-ba, a többi pedig attributom lenne az input tag-en *@
                 <input type="submit" name="submit" value=@item.Name />
             </td>
             <td>

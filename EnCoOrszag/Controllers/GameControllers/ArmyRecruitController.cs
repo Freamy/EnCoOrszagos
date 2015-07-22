@@ -20,6 +20,7 @@ namespace EnCoOrszag.Controllers.GameControllers
 
         public ActionResult ArmyRecruit()
         {
+            //komment: jáááj, Authorize attribútum, lsd. generált AccountController
             bool logedin = Manager.IsLogedIn();
             if (logedin)
             {

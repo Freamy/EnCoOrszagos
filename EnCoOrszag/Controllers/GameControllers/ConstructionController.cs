@@ -37,7 +37,7 @@ namespace EnCoOrszag.Controllers.GameControllers
         public ActionResult CancelConstruction(string Cancel, ConstructionViewModel vmC)
         {           
             Manager.CancelConstruction(vmC.Id);
-            ModelState.Clear();
+            ModelState.Clear();//komment: wuuuuuuuuut?
             TempData["Cancelled"] = "Construction cancelled.";
             return RedirectToAction("CurrentConstructions", "Construction");
         }
