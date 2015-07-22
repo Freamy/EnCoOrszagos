@@ -10,6 +10,7 @@ using EnCoOrszag.ViewModell;
 
 namespace EnCoOrszag.Controllers.GameControllers
 {
+     [Authorize]
     public class ArmyRecruitController : Controller
     {
         // GET: ArmyRecruit
@@ -20,27 +21,16 @@ namespace EnCoOrszag.Controllers.GameControllers
 
         public ActionResult ArmyRecruit()
         {
-            //komment: jáááj, Authorize attribútum, lsd. generált AccountController
-            bool logedin = Manager.IsLogedIn();
-            if (logedin)
-            {
-                if (TempData["Message"] != null)
-                {
-                    ViewBag.Message = TempData["Message"].ToString();
-                }
-                return View(Manager.MakeArmyRecruitViewModel());
-            }
-            else
-            {
-                ViewBag.Message = "Please register a new user.";
-                return RedirectToAction("Login", "Account");
-            }
+           if (TempData["Message"] != null)
+           {
+               ViewBag.Message = TempData["Message"].ToString();
+           }
+           return View(Manager.MakeArmyRecruitViewModel());
         }
 
         public ActionResult Recruit(ArmyRecruitViewModel vmAR)
         {
-            ModelState.Clear();
-            string message =  Manager.RecruitTroops(vmAR.Id, vmAR.hAmount);
+            string message =  Manager.RecruitTroops(vmAR.Id, vmAR.HAmount);
             TempData["Message"] = message;
             return RedirectToAction("ArmyRecruit");
         }

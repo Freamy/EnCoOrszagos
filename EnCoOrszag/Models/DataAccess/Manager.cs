@@ -37,6 +37,7 @@ namespace EnCoOrszag.Models.DataAccess
 
                 vmBls = context.Blueprints.Select(m => new BuildingViewModel()
                 {
+                    Id = m.Id,
                     Name = m.Name,
                     Cost = m.Cost,
                     Description = m.Description,
@@ -61,6 +62,7 @@ namespace EnCoOrszag.Models.DataAccess
 
                 vmResearch = context.Technologies.Select(m => new ResearchViewModel()
                 {
+                    Id = m.Id,
                     Name = m.Name,
                     Description = m.Description,
                     Researched = context.Researches.Where(k => k.Country.Id == activeCountryId).FirstOrDefault(k => k.Technology.Id == m.Id) != null 
@@ -130,7 +132,7 @@ namespace EnCoOrszag.Models.DataAccess
         }
 
 
-        public static bool StartConstruction(string buildingName)
+        public static bool StartConstruction(int id)
         {
             using (var context = new ApplicationDbContext())
             {
@@ -142,9 +144,10 @@ namespace EnCoOrszag.Models.DataAccess
                 {
                     Construction buildingStarted = new Construction()
                     {
-                        Blueprint = context.Blueprints.First(m => m.Name == buildingName),
+                        Blueprint = context.Blueprints.First(m => m.Id == id),
                         Country = context.Countries.First(m => m.Id == activeCountryId),
-                        FinishTurn = context.Game.First(m => m.Id == 1).Turn + context.Blueprints.First(m => m.Name == buildingName).BuildTime
+                        FinishTurn = context.Game.First(m => m.Id == 1).Turn + context.Blueprints
+                        .First(m => m.Id == id).BuildTime
                     };
                     context.Constructions.Add(buildingStarted);
                     context.SaveChanges();
@@ -154,7 +157,7 @@ namespace EnCoOrszag.Models.DataAccess
             }
         }
 
-        public static string StartResearch(string researchName)
+        public static string StartResearch(int id)
         {
             using (var context = new ApplicationDbContext()) { 
                 int activeCountryId = context.Users.First(c => c.UserName == System.Web.HttpContext.Current.User.Identity.Name).Country.Id;
@@ -162,16 +165,16 @@ namespace EnCoOrszag.Models.DataAccess
                 bool canResearch = context.Researching.Count(m => m.Country.Id == activeCountryId) < MAX_PARALLEL_RESEARCHES;
 
                 bool doingResearch = context.Researching.Where(m => m.Country.Id == activeCountryId)
-                    .Count(k => k.Technology.Name == researchName) < 1;
+                    .Count(k => k.Technology.Id == id) < 1;
 
 
                 if (canResearch && doingResearch)
                 {
                     Researching researchStarted = new Researching()
                     {
-                        Technology = context.Technologies.First(m => m.Name == researchName),
+                        Technology = context.Technologies.First(m => m.Id == id),
                         Country = context.Countries.First(m => m.Id == activeCountryId),
-                        FinishTurn = context.Game.First(m => m.Id == 1).Turn + context.Technologies.First(m => m.Name == researchName).ResearchTime
+                        FinishTurn = context.Game.First(m => m.Id == 1).Turn + context.Technologies.First(m => m.Id == id).ResearchTime
                     };
 
 

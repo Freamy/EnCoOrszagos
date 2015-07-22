@@ -20,7 +20,7 @@ namespace EnCoOrszag.ViewModell
         public int OccupiedSpace { get; set; }
 
         //komment: a "h" nem illik az elejére :\ death for camelCase
-        public int hAmount { get; set; }
+        public int HAmount { get; set; }
 
         public int Id { get; set; }
     }

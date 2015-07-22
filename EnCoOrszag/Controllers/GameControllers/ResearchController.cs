@@ -9,6 +9,7 @@ using EnCoOrszag.Models.DataAccess;
 
 namespace EnCoOrszag.Controllers.GameControllers
 {
+     [Authorize]
     public class ResearchController : Controller
     {
         //
@@ -20,10 +21,6 @@ namespace EnCoOrszag.Controllers.GameControllers
 
         public ActionResult Research()
         {
-            bool logedin = Manager.IsLogedIn();
-
-            if (logedin)
-            {
                 //komment: ha tempdatát szeretnénk használni üzenetküldésre, készítsünk hozzá wrapper osztályt, ami elfedi magát a tempdata
                 // használatát, mivel ez egy string-es dictionary gyakorlatilag, nagyon hamar elburjánzhat, hogy milyen key-el mi van, 
                 // mit hol kell visszaolvasni, stb. stb.
@@ -34,19 +31,12 @@ namespace EnCoOrszag.Controllers.GameControllers
 
                 List<ResearchViewModel> vmResearch = Manager.MakeResearchViewModel();
                 return View(vmResearch);
-            }
-            else
-            {
-                ViewBag.Message = "Please register a new user.";
-                return RedirectToAction("Login", "Account");
-            }
         }
 
-        public ActionResult ResearchSomething(string submit)
+        public ActionResult ResearchSomething(ResearchViewModel rvm)
         {
-            Manager manager = new Manager();//komment: ez sem kell ugye már a staticok miatt
 
-            TempData["Response"] = Manager.StartResearch(submit);
+           TempData["Response"] = Manager.StartResearch(rvm.Id);
 
             return RedirectToAction("Research");
         }

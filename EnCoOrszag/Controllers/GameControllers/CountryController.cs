@@ -13,6 +13,7 @@ using EnCoOrszag.Models.DataAccess;
 
 namespace EnCoOrszag.Controllers.Entities
 {
+     [Authorize]
     public class CountryController : Controller
     {
         //
@@ -23,23 +24,18 @@ namespace EnCoOrszag.Controllers.Entities
         }
 
         //Main country screen
+        
         public ActionResult Country()
         {
-            bool logedin = Manager.IsLogedIn();
 
-            if (logedin) {
                 return View(Manager.MakeCountryViewModel());
-            }
-            else
-            {
-                return RedirectToAction("Login", "Account");
-            }
+
+
         }
 
         public ActionResult EndTurn()
         {
             Manager.EndTurn();
-            RedirectToAction("country"); //komment: ?:))
             return RedirectToAction("Country");
         }
 

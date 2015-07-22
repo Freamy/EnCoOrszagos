@@ -36,14 +36,12 @@ namespace EnCoOrszag.Controllers.GameControllers
             }
         }
 
-        //komment: nem comparálunk nevet azonosítóként!!
-        public ActionResult BuildSomething(string submit)
+        public ActionResult BuildSomething(BuildingViewModel bvm)
         {
             Manager manager = new Manager();
 
             bool started = false;
-
-            started = Manager.StartConstruction(submit);
+            started = Manager.StartConstruction(bvm.Id);
             if (started)
             {
                 TempData["Response"] = "Your construction is started.";

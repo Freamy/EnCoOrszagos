@@ -14,6 +14,9 @@
         this.assaultStore = $window.assaults;
         this.countryStore = $window.countries;
 
+        $scope.countriesML = $window.countries;
+        $scope.armiesML = $window.armyModel;
+
         $scope.archer = '0';
         $scope.knight = '0';
         $scope.elite = '0';
@@ -22,15 +25,15 @@
 
         this.canSend = function () {
 
-                var enoughArcher = $scope.archer <= this.armyStore[0].Size && this.armyStore[0] >= 0;
+            var enoughArcher = $scope.archer <= this.armyStore[0].Size && $scope.archer >= 0;
 
-                var enoughKnight = $scope.knight <= this.armyStore[1].Size && this.armyStore[1] >= 0;
+            var enoughKnight = $scope.knight <= this.armyStore[1].Size && $scope.knight >= 0;
 
-                var enoughElite = $scope.elite <= this.armyStore[2].Size && this.armyStore[2] >= 0;
+            var enoughElite = $scope.elite <= this.armyStore[2].Size && $scope.elite >= 0;
 
-                var atleastOne = ($scope.archer + $scope.knight + $scope.elite) != 0;
+            var atleastOne = ($scope.archer + $scope.knight + $scope.elite) > 0;
 
-                var cantAttackOwn = $scope.target != $window.ownName;
+            var cantAttackOwn = $scope.target != $window.ownName;
 
              
 
@@ -39,17 +42,20 @@
 
         this.sendArmy = function () {
 
+            var archer = parseInt($scope.archer);
+            var knight = parseInt($scope.knight);
+            var elite = parseInt($scope.elite);
             
             var send = {
                'Name': $scope.target,
-                'Archers': $scope.archer,
-                'Knights': $scope.knight,
-                'Elites': $scope.elite
+                'Archers': archer,
+                'Knights': knight,
+                'Elites': elite
             }
          
-                this.armyStore[0].Size -= $scope.archer;
-                this.armyStore[1].Size -= $scope.knight;
-                this.armyStore[2].Size -= $scope.elite;
+               $scope.armiesML[0].Size -= $scope.archer;
+               $scope.armiesML[1].Size -= $scope.knight;
+               $scope.armiesML[2].Size -= $scope.elite;
 
            
             //komment: az ilyeneket globálisan lehet állítani, ha szükség van rá, így nem kell minden postnak megadni configként.

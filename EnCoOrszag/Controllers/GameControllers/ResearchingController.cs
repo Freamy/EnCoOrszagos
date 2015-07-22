@@ -9,6 +9,7 @@ using EnCoOrszag.Models.DataAccess;
 
 namespace EnCoOrszag.Controllers.GameControllers
 {
+     [Authorize]
     public class ResearchingController : Controller
     {
         //
@@ -25,18 +26,9 @@ namespace EnCoOrszag.Controllers.GameControllers
 
         public ActionResult CurrentResearching()
         {
-            bool logedin = Manager.IsLogedIn();
-            if (logedin)
-            {
                 if (TempData["Cancel"] != null)
                     ViewBag.Message = TempData["Cancel"].ToString();
                 return View("Researching", Manager.MakeResearchingViewModel());
-            }
-            else
-            {
-                ViewBag.Message = "Please register a new user.";
-                return RedirectToAction("Login", "Account");
-            }
         }
 
         public ActionResult CancelResearch(ResearchingViewModel vmR)

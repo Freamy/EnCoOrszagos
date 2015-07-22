@@ -20,8 +20,7 @@
 
 <h4>@ViewBag.Message</h4>
 
-@using (Html.BeginForm("BuildSomething", "Building", FormMethod.Post))
-{
+
     <table>
         <tr>
             <th>Construct</th>
@@ -30,24 +29,28 @@
         </tr>
         @foreach (var item in Model)
         {
-
-        <tr>
-            <td align="center">
-                @* komment: ez sem valid html, kellenek a tagekhez a macskakaparások
-                a @item.Name egy az egyben belerendereli a szöveget arra a helyre. Bár az értelmesebb böngészük megeszik
-                így is, ha több szóból állna  anév, akkor csak az első szó kerülne a value-ba, a többi pedig attributom lenne az input tag-en *@
-                <input type="submit" name="submit" value=@item.Name />
-            </td>
-            <td>
-                @item.Description
-            </td>
-            <td>
-                @item.NoOfFinishedBlueprints
-            </td>
-        </tr>
+            using (Html.BeginForm("BuildSomething", "Building", FormMethod.Post))
+            {
+                <tr>
+                    <td align="center">
+                        @* komment: ez sem valid html, kellenek a tagekhez a macskakaparások
+                        a @item.Name egy az egyben belerendereli a szöveget arra a helyre. Bár az értelmesebb böngészük megeszik
+                        így is, ha több szóból állna  anév, akkor csak az első szó kerülne a value-ba, a többi pedig attributom lenne az input tag-en *@
+                        <input type="submit" name="submit" value="@item.Name"/>
+                    </td>
+                    <td>
+                         @item.Description
+                    </td>
+                    <td>
+                         @item.NoOfFinishedBlueprints
+                    </td>
+                    @Html.HiddenFor(m => m.First(k => k.Id == item.Id).Id)
+                    
+                 </tr>
+            }
         }
     </table>
-}
+
 
 <br />
 

@@ -8,6 +8,7 @@ using EnCoOrszag.Models.DataAccess;
 
 namespace EnCoOrszag.Controllers.GameControllers
 {
+     [Authorize]
     public class HighScoreController : Controller
     {
         // GET: HighScore

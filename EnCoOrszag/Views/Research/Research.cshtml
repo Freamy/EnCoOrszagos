@@ -24,8 +24,8 @@
 
 <h4>@ViewBag.Message</h4>
 
-@using (Html.BeginForm("ResearchSomething","Research",FormMethod.Post))
-{
+
+
     <table>
         <tr>
             <th>Research</th>
@@ -33,16 +33,20 @@
         </tr>
         @foreach (var item in Model)
         {
-            <tr>
-                <td align="left">
-                    <input type="submit" name="submit" value="@item.Name" disabled=@item.Researched/>
-                </td>
-                <td>
-                    @item.Description
-                </td>
-            </tr>
+            using (Html.BeginForm("ResearchSomething", "Research", FormMethod.Post))
+            {
+                 <tr>
+                    <td align="left">
+                        <input type="submit" name="submit" value="@item.Name" disabled=@item.Researched/>
+                    </td>
+                    <td>
+                        @item.Description
+                    </td>
+                    @Html.HiddenFor(m => m.First(k => k.Id == item.Id).Id)
+                </tr>
+            }
         }
         
     </table>
-}
+
 <br />

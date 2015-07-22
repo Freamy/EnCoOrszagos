@@ -13,6 +13,7 @@ using EnCoOrszag.ViewModell;
 
 namespace EnCoOrszag.Controllers.GameControllers
 {
+     [Authorize]
     public class AssaultController : Controller
     {
         // GET: Assault
@@ -23,15 +24,8 @@ namespace EnCoOrszag.Controllers.GameControllers
 
         public ActionResult Assault()
         {
-            if (Manager.IsLogedIn()) {
-                AssaultViewModel vmA = Manager.MakeAssaultViewModel();
-                return View(vmA);
-            }
-            else
-            {
-                ViewBag.Message = "Please register a new user.";
-                return RedirectToAction("Login", "Account");
-            }
+            AssaultViewModel vmA = Manager.MakeAssaultViewModel();
+            return View(vmA);
         }
 
         [HttpPost]

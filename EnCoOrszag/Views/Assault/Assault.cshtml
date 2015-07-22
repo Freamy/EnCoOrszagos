@@ -27,23 +27,26 @@
             <!-- Your own forces -->
             <h3>Your forces in the country.</h3>
             <table>
-                <tr ng-repeat="unit in Cont.armyStore">
+                <tr ng-model="armiesML" ng-repeat="unit in armiesML">
                     <td>{{unit["Type"]["Name"]}}</td>
                     <td>{{unit["Size"]}}</td>
                 </tr>
             </table>
             <br />
 
+            <label>Archers:</label>
             <input ng-model="archer" type="text" />
+            <label>Knights:</label>
             <input ng-model="knight" type="text" />
+            <label>Elites:</label>
             <input ng-model="elite" type="text" />
-            <button ng-disabled="Cont.canSend()" ng-click="Cont.sendArmy()"> Assault </button>
+            <button ng-model="armiesML" ng-disabled="Cont.canSend()" ng-click="Cont.sendArmy()"> Assault </button>
 
         
             <br /><br />
             <label>Target country: </label>
             <select ng-model="target">
-                <option ng-repeat="country in Cont.countryStore" value={{country["Name"]}}>{{country["Name"]}}</option>
+                <option ng-model="countriesML" ng-repeat="country in countriesML" value={{country["Name"]}}>{{country["Name"]}}</option>
             </select>
 
             <h3>Your current assaults.</h3>
